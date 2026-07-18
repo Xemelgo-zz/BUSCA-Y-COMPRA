@@ -3,96 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Busca y Compra</title>
+    <title>Busca y Compra Pro</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Busca y Compra">
+    <meta name="apple-mobile-web-app-title" content="BuscaCompra">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-color: #6366f1;
+            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        }
+        
         body {
             margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: #f7f9fc; color: #2d3748;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-gradient); color: #f8fafc;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* PANTALLA DE PROTECCIÓN */
         #lockScreen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #1a365d; display: flex; flex-direction: column;
+            background: var(--bg-gradient); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999;
-            color: white; padding: 20px; box-sizing: border-box;
+            padding: 20px; box-sizing: border-box;
         }
         .lock-box {
-            background: white; padding: 30px; border-radius: 16px; color: #2d3748;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 320px; width: 100%; text-align: center;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 40px 30px; border-radius: 24px; border: 1px solid var(--glass-border);
+            max-width: 340px; width: 100%; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .lock-box h2 { margin-top: 0; color: #1a365d; }
+        .lock-box h2 { margin-top: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .lock-box p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
         .lock-box input {
-            width: 100%; padding: 12px; font-size: 20px; text-align: center;
-            border: 2px solid #cbd5e0; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box;
+            width: 100%; padding: 16px; font-size: 24px; text-align: center; letter-spacing: 6px;
+            border: 1px solid var(--glass-border); border-radius: 14px; margin-bottom: 20px; 
+            box-sizing: border-box; background: rgba(0,0,0,0.2); color: white; outline: none;
+            transition: all 0.3s;
         }
+        .lock-box input:focus { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
         .lock-box button {
-            width: 100%; background-color: #48bb78; color: white; padding: 12px;
-            font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
+            width: 100%; background: var(--accent-gradient); color: white; padding: 16px;
+            font-size: 16px; font-weight: 600; border: none; border-radius: 14px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); transition: transform 0.2s;
         }
+        .lock-box button:active { transform: scale(0.98); }
+
+        /* CONTENIDO PRINCIPAL */
         #appContent {
-            display: none; width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; text-align: center;
+            display: none; width: 100%; max-width: 460px; padding: 30px 20px; box-sizing: border-box;
         }
-        .logo-area { margin-top: 40px; margin-bottom: 30px; }
-        .logo-title { font-size: 32px; font-weight: bold; color: #1a365d; margin: 0; }
-        .subtitle { font-size: 16px; color: #718096; margin-top: 8px; }
+        
+        .logo-area { 
+            text-align: center; margin-top: 25px; margin-bottom: 40px; position: relative;
+        }
+        
+        /* Efecto de Radar Animado */
+        .radar-icon {
+            width: 70px; height: 70px; background: var(--accent-gradient); 
+            border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; 
+            justify-content: center; font-size: 28px; position: relative;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+        .radar-icon::before {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            border: 2px solid #06b6d4; border-radius: 50%;
+            animation: pulse 2s linear infinite; opacity: 0;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .logo-title { font-size: 34px; font-weight: 800; letter-spacing: -1px; margin: 0; background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 15px; color: #94a3b8; margin-top: 6px; font-weight: 400; }
+
         .search-box {
-            background: white; border-radius: 16px; padding: 25px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); margin-bottom: 25px;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 30px 24px; border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
-        .search-label { font-size: 20px; font-weight: 600; display: block; margin-bottom: 15px; color: #2b6cb0; }
+        .search-label { font-size: 16px; font-weight: 500; display: block; margin-bottom: 12px; color: #cbd5e1; text-align: left; padding-left: 4px; }
+        
+        .input-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         input[type="text"] {
-            width: 100%; font-size: 22px; padding: 15px; border: 2px solid #cbd5e0;
-            border-radius: 10px; box-sizing: border-box; margin-bottom: 20px; outline: none; text-align: center;
+            width: 100%; font-size: 18px; padding: 18px 20px; border: 1px solid var(--glass-border);
+            border-radius: 16px; box-sizing: border-box; outline: none; text-align: left;
+            background: rgba(15, 23, 42, 0.6); color: white; transition: all 0.3s;
         }
-        input[type="text"]:focus { border-color: #3182ce; }
+        input[type="text"]:focus { border-color: #06b6d4; box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+        
         .btn-main {
-            width: 100%; background-color: #3182ce; color: white; font-size: 20px;
-            font-weight: bold; padding: 18px; border: none; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(49, 130, 206, 0.3);
+            width: 100%; background: var(--accent-gradient); color: white; font-size: 17px;
+            font-weight: 600; padding: 18px; border: none; border-radius: 16px; cursor: pointer;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.35);
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            transition: all 0.2s;
         }
-        .results-area { margin-top: 20px; text-align: left; }
-        .card {
-            background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); border-left: 5px solid #48bb78;
+        .btn-main:active { transform: scale(0.97); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2); }
+        
+        .info-note {
+            font-size: 13px; color: #64748b; margin-top: 20px; line-height: 1.5; text-align: center;
         }
-        .card h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a365d; }
-        .card p { margin: 0; font-size: 15px; color: #4a5568; }
-        .card .price { font-size: 18px; font-weight: bold; color: #2f855a; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <div id="lockScreen">
         <div class="lock-box">
-            <h2>Acceso Privado</h2>
-            <p>Introduce la clave para probar la app:</p>
-            <input type="password" id="pinInput" placeholder="••••">
-            <button onclick="verificarClave()">ENTRAR</button>
-            <p id="errorMsg" style="color:red; font-weight:bold; display:none; margin-top:10px;">Clave incorrecta</p>
+            <div style="font-size: 36px; margin-bottom: 10px;">🛡️</div>
+            <h2>Acceso Encriptado</h2>
+            <p>Introduce tu código de verificación</p>
+            <input type="password" id="pinInput" placeholder="••••" inputmode="numeric" pattern="[0-9]*">
+            <button onclick="verificarClave()">Desbloquear App</button>
+            <p id="errorMsg" style="color:#f87171; font-weight:600; display:none; margin-top:15px; margin-bottom:0;">⚠️ Clave incorrecta</p>
         </div>
     </div>
 
     <div id="appContent">
         <div class="logo-area">
+            <div class="radar-icon">📡</div>
             <h1 class="logo-title">Busca y Compra</h1>
-            <div class="subtitle">Tu comercio local, más cerca que nunca</div>
+            <div class="subtitle">Radar de tiendas locales en tiempo real</div>
         </div>
 
         <div class="search-box">
-            <label class="search-label" for="productInput">¿Qué necesitas comprar hoy?</label>
-            <input type="text" id="productInput" placeholder="Ej. Motosierra, Pan..." autocomplete="off">
-            <button class="btn-main" onclick="buscarProducto()">🔍 BUSCAR TIENDAS CERCA</button>
+            <label class="search-label" for="productInput">¿Qué quieres encontrar abierto?</label>
+            <div class="input-wrapper">
+                <input type="text" id="productInput" placeholder="Ej. panadería, ferretería, estanco..." autocomplete="off">
+            </div>
+            <button class="btn-main" onclick="buscarEnGoogle()">
+                <span>🔍</span> Lanzar Búsqueda En Vivo
+            </button>
+            
+            <p class="info-note">La app cruza tu posición GPS con Google para mostrarte instantáneamente los locales abiertos a tu alrededor de lo que busques.</p>
         </div>
-
-        <div id="results" class="results-area"></div>
     </div>
 
     <script {nonce}>
+        // Puedes cambiar tu contraseña aquí (mantén las comillas)
         const CLAVE_CORRECTA = "1234"; 
 
         function verificarClave() {
@@ -101,35 +155,30 @@
                 document.getElementById('lockScreen').style.display = 'none';
                 document.getElementById('appContent').style.display = 'block';
             } else {
-                document.getElementById('errorMsg').style.display = 'block';
+                const error = document.getElementById('errorMsg');
+                error.style.display = 'block';
+                document.getElementById('pinInput').value = '';
             }
         }
 
-        function buscarProducto() {
-            const query = document.getElementById('productInput').value.trim().toLowerCase();
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+        // Permitir entrar pulsando "Intro" o "Buscar" en el teclado del móvil
+        document.getElementById('pinInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verificarClave();
+        });
 
+        function buscarEnGoogle() {
+            const query = document.getElementById('productInput').value.trim();
+            
             if (!query) {
-                resultsDiv.innerHTML = '<p style="text-align:center; color:#e53e3e; font-weight:bold;">Por favor, escribe algo.</p>';
+                alert('Por favor, escribe un comercio o producto.');
                 return;
             }
 
-            const mockStores = [
-                { name: "Ferretería García", product: "motosierra", detail: "Modelo Stihl MS 170. Disponible en tienda.", price: "199,00 €", dist: "A 450 metros" },
-                { name: "Suministros Hércules", product: "motosierra", detail: "Husqvarna a batería.", price: "245,00 €", dist: "A 1,2 km" },
-                { name: "Panadería Central", product: "pan", detail: "Barra artesana recién horneada.", price: "1,10 €", dist: "A 150 metros" }
-            ];
+            // Filtro inteligente para forzar a Google Maps a mostrar locales abiertos cerca
+            const busquedaMapa = encodeURIComponent(`${query} abierto`);
+            const googleMapsUrl = `https://www.google.com/maps/search/${busquedaMapa}`;
 
-            const filtrados = mockStores.filter(store => store.product.includes(query));
-
-            if (filtrados.length === 0) {
-                resultsDiv.innerHTML = '<div class="card" style="border-left-color: #ed8936;"><h3>Sin stock registrado</h3><p>Búsqueda transmitida a comercios locales.</p></div>';
-            } else {
-                filtrados.forEach(store => {
-                    resultsDiv.innerHTML += `<div class="card"><h3>${store.name}</h3><p>${store.detail}</p><p style="color:#718096; font-size:13px;">📍 ${store.dist}</p><div class="price">${store.price}</div></div>`;
-                });
-            }
+            window.open(googleMapsUrl, '_blank');
         }
     </script>
 </body>
