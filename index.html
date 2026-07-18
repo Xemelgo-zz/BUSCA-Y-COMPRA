@@ -33,7 +33,6 @@
         }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .brand-name { font-size: 22px; font-weight: 800; color: var(--accent-orange); letter-spacing: -0.5px; }
-        .notification-icon { font-size: 20px; cursor: pointer; }
         
         .search-container {
             display: flex; background: #1e293b; border-radius: 25px; padding: 4px 6px 4px 16px;
@@ -47,166 +46,118 @@
             border-radius: 50%; color: white; cursor: pointer; font-size: 14px;
         }
 
-        /* CATEGORÍAS EN TABS */
-        .tabs-nav {
-            display: flex; gap: 20px; overflow-x: auto; padding: 8px 16px;
-            white-space: nowrap; font-size: 14px; scrollbar-width: none;
-        }
-        .tabs-nav::-webkit-scrollbar { display: none; }
-        .tab-item { color: var(--text-muted); font-weight: 500; cursor: pointer; }
-        .tab-item.active { color: var(--accent-orange); font-weight: 700; border-bottom: 2px solid var(--accent-orange); padding-bottom: 4px; }
+        /* TABS */
+        .tabs-nav { display: flex; gap: 20px; overflow-x: auto; padding: 8px 16px; white-space: nowrap; font-size: 14px; }
+        .tab-item { color: var(--text-muted); font-weight: 500; }
+        .tab-item.active { color: var(--accent-orange); font-weight: 700; border-bottom: 2px solid var(--accent-orange); }
 
-        /* HERO PROMO BANNER */
+        /* BANNER */
         .promo-banner {
-            background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
-            margin: 12px 16px; padding: 16px; border-radius: 16px; position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); overflow: hidden; border: 1px solid rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, #111827 0%, #080711 100%);
+            margin: 12px 16px; padding: 16px; border-radius: 16px; border: 1px solid rgba(255, 87, 34, 0.2);
         }
-        .promo-banner h3 { margin: 0; font-size: 18px; font-weight: 800; color: var(--green-glow); }
-        .promo-banner p { margin: 6px 0 0; font-size: 12px; color: rgba(255,255,255,0.8); }
+        .promo-banner h3 { margin: 0; font-size: 16px; color: var(--accent-orange); }
+        .promo-banner p { margin: 4px 0 0; font-size: 12px; color: var(--text-muted); }
 
-        /* ICONOS DE ACCESO RÁPIDO */
-        .quick-actions {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 16px; text-align: center;
-        }
-        .action-item { font-size: 12px; color: var(--text-muted); cursor: pointer; }
-        .action-icon { font-size: 26px; margin-bottom: 4px; display: block; }
+        /* SECCIÓN PRODUCTOS MUESTRA */
+        .section-title { font-size: 17px; font-weight: 700; padding: 8px 16px; margin: 0; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 16px; }
+        .product-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; }
+        .product-img-box { background: #2d3748; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .product-info { padding: 10px; }
+        .product-name { font-size: 13px; margin: 0 0 4px 0; color: #cbd5e1; }
+        .current-price { font-size: 15px; font-weight: 700; color: var(--accent-orange); }
 
-        /* SECCIÓN PRODUCTOS MUESTRA (FEED) */
-        .section-title { font-size: 18px; font-weight: 700; padding: 8px 16px; margin: 0; }
-        .products-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 16px;
-        }
-        .product-card {
-            background: var(--bg-card); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.02);
-        }
-        .product-img-box {
-            background: #2d3748; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 48px;
-        }
-        .product-info { padding: 10px; display: flex; flex-direction: column; flex: 1; }
-        .product-name { font-size: 13px; font-weight: 500; margin: 0 0 6px 0; color: #cbd5e1; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .price-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
-        .current-price { font-size: 16px; font-weight: 700; color: var(--accent-orange); }
-        .old-price { font-size: 11px; text-decoration: line-through; color: var(--text-muted); }
-        .sales-info { font-size: 11px; color: var(--text-muted); }
-
-        /* VENTANA FLOTANTE DE RESULTADOS (GPS INTEGRADO EN LA APP) */
-        .results-overlay {
-            display: none; background: var(--bg-main); padding: 16px; margin: 12px 16px; border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        /* PANEL DE RESULTADOS INTEGRADO */
+        .results-overlay { display: none; background: #111827; padding: 16px; margin: 12px 16px; border-radius: 16px; border: 2px solid #ff5722; }
         .loader { text-align: center; padding: 20px; color: var(--text-muted); }
         .spinner { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-orange); border-radius: 50%; margin: 0 auto 10px; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .shop-card {
-            background: #141b2d; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px;
-            padding: 14px; margin-bottom: 10px; text-align: left;
-        }
+        .shop-card { background: #1e293b; border-radius: 12px; padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--green-glow); }
         .shop-header { display: flex; justify-content: space-between; align-items: center; }
         .shop-title { font-size: 15px; font-weight: 700; margin: 0; color: white; }
-        .badge-open { background: rgba(16, 185, 129, 0.15); color: var(--green-glow); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-
-        /* BOTTOM BANNER (LOGIN INVITATION) */
-        .login-banner {
-            background: #fff0ed; color: #1e293b; padding: 12px 16px; display: flex;
-            justify-content: space-between; align-items: center; margin: 12px 16px; border-radius: 12px;
-        }
-        .login-banner p { margin: 0; font-size: 13px; font-weight: 600; }
-        .login-btn { background: var(--accent-orange); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
+        .badge-open { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
 
         /* NAVBAR INFERIOR */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a;
-            display: grid; grid-template-columns: repeat(5, 1fr); height: 64px;
-            border-top: 1px solid rgba(255,255,255,0.05); z-index: 200;
-        }
-        .nav-tab { display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-muted); font-size: 11px; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: grid; grid-template-columns: repeat(4, 1fr); height: 60px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .nav-tab { display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-muted); font-size: 11px; }
         .nav-tab.active { color: var(--accent-orange); }
-        .nav-tab-icon { font-size: 20px; margin-bottom: 2px; }
-    </style>
-</head>
-<body>
+    </nav>
 
-    <!-- HEADER & BARRA DE BÚSQUEDA TIPO ALIEXPRESS -->
     <header class="app-header">
-        <div class="header-top">
-            <span class="brand-name">BuscaCompra</span>
-            <span class="notification-icon">🔔</span>
-        </div>
+        <div class="header-top"><span class="brand-name">BuscaCompra 🏪</span></div>
         <div class="search-container">
-            <input type="text" id="productSearchInput" placeholder="¿Qué necesitas urgente ahora mismo?" autocomplete="off">
+            <input type="text" id="productSearchInput" placeholder="¿Qué necesitas con urgencia ahora?">
             <button class="search-btn" onclick="ejecutarRadarUrgente()">🔍</button>
         </div>
     </header>
 
-    <!-- TABS DE EXPLORACIÓN -->
     <nav class="tabs-nav">
-        <span class="tab-item active">Abierto ya</span>
-        <span class="tab-item">Urgencias Nocturnas</span>
-        <span class="tab-item">Gasolineras / 24h</span>
+        <span class="tab-item active">Buscador por Cercanía Real</span>
     </nav>
 
-    <!-- INTERFAZ DINÁMICA: DETECTOR EN TIEMPO REAL (IN-APP) -->
+    <!-- ZONA GANCHO DE RESULTADOS DE GEOLOCALIZACIÓN -->
     <div id="resultsOverlay" class="results-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h4 style="margin:0; font-size:14px; color:var(--green-glow);">📡 FILTRANDO EXCLUSIVAMENTE LOCALES ABIERTOS</h4>
+            <h4 style="margin:0; font-size:14px; color:var(--accent-orange);">📍 LOCALES CERCANOS DETECTADOS</h4>
             <span style="cursor:pointer; font-size:12px; color:var(--text-muted);" onclick="cerrarResultados()">Cerrar ✕</span>
         </div>
         <div id="loader" class="loader">
             <div class="spinner"></div>
-            <p id="loaderText" style="margin:0; font-size:13px;">Analizando horarios de apertura...</p>
+            <p id="loaderText" style="margin:0; font-size:13px;">Calculando tiendas físicas en tu rango de GPS...</p>
         </div>
         <div id="listaTiendas"></div>
     </div>
 
-    <!-- BANNER DE PROMO CON FILTRO NOCTURNO ACTIVO -->
     <div class="promo-banner">
-        <h3>🌙 Modo Nocturno Activo</h3>
-        <p>Filtrando estrictamente comercios abiertos de madrugada, 24 horas y estaciones de servicio.</p>
+        <h3>🚨 S.O.S Madrugada Activo</h3>
+        <p>Buscando automáticamente en gasolineras, tiendas 24h y bazares abiertos en un rango extendido de 10km.</p>
     </div>
 
-    <!-- ACCESOS RÁPIDOS EN ICONOS -->
-    <div class="quick-actions">
-        <div class="action-item" onclick="buscarCategoriaRapida('hielo')"><span class="action-icon">🧊</span>Hielo</div>
-        <div class="action-item" onclick="buscarCategoriaRapida('pan')"><span class="action-icon">🍞</span>Pan fresco</div>
-        <div class="action-item" onclick="buscarCategoriaRapida('pila')"><span class="action-icon">🔋</span>Pilas</div>
-        <div class="action-item" onclick="buscarCategoriaRapida('motosierra')"><span class="action-icon">⚙️</span>Herramientas</div>
-    </div>
-
-    <!-- SECCIÓN DE PRODUCTOS DE PRIMERA NECESIDAD -->
-    <h3 class="section-title">Urgencias Disponibles de Madrugada</h3>
+    <h3 class="section-title">Productos de Emergencia Disponibles</h3>
     <div class="products-grid">
         <div class="product-card" onclick="autocompletarBusqueda('hielo')">
             <div class="product-img-box">🧊</div>
             <div class="product-info">
-                <p class="product-name">Bolsa de Hielo Macizo Cubitos 2kg</p>
-                <div class="price-row"><span class="current-price">1,80€</span></div>
-                <span class="sales-info">Disponible en Gasolineras 24h</span>
+                <p class="product-name">Bolsa de Hielo Macizo 2kg</p>
+                <span class="current-price">1,80€</span>
             </div>
         </div>
         <div class="product-card" onclick="autocompletarBusqueda('pilas')">
             <div class="product-img-box">🔋</div>
             <div class="product-info">
-                <p class="product-name">Pilas Alcalinas AA Alta Duración</p>
-                <div class="price-row"><span class="current-price">3,45€</span></div>
-                <span class="sales-info">Tiendas de conveniencia</span>
+                <p class="product-name">Pilas Alcalinas AA (Pack 4)</p>
+                <span class="current-price">3,45€</span>
+            </div>
+        </div>
+        <div class="product-card" onclick="autocompletarBusqueda('leche')">
+            <div class="product-img-box">🥛</div>
+            <div class="product-info">
+                <p class="product-name">Leche Entera 1L</p>
+                <span class="current-price">1,10€</span>
+            </div>
+        </div>
+        <div class="product-card" onclick="autocompletarBusqueda('tiritas')">
+            <div class="product-img-box">🩹</div>
+            <div class="product-info">
+                <p class="product-name">Tiritas Elásticas Impermeables</p>
+                <span class="current-price">2,15€</span>
             </div>
         </div>
     </div>
 
-    <!-- NAVBAR INFERIOR -->
     <nav class="bottom-nav">
-        <div class="nav-tab active"><span class="nav-tab-icon">🏠</span><span>Inicio</span></div>
-        <div class="nav-tab"><span class="nav-tab-icon">🔍</span><span>Radar</span></div>
-        <div class="nav-tab"><span class="nav-tab-icon">🛒</span><span>Cesta</span></div>
-        <div class="nav-tab"><span class="nav-tab-icon">👤</span><span>Mi Cuenta</span></div>
+        <div class="nav-tab active"><span>🏠 Inicio</span></div>
+        <div class="nav-tab"><span>🔍 Radar</span></div>
+        <div class="nav-tab"><span>🛒 Cesta</span></div>
+        <div class="nav-tab"><span>👤 Perfil</span></div>
     </nav>
 
     <script {nonce}>
-        const mapeoTiendasCompleto = {
-            'hielo': ['convenience', 'fuel', 'kiosk', 'supermarket'],
+        // Diccionario de categorías infalibles para la madrugada
+        const mapeoCategoriasNocturnas = {
+            'hielo': ['fuel', 'convenience', 'supermarket'],
             'pan': ['convenience', 'fuel', 'bakery'],
             'leche': ['convenience', 'fuel', 'supermarket'],
             'agua': ['convenience', 'fuel', 'kiosk'],
@@ -216,7 +167,7 @@
             'tiritas': ['pharmacy', 'convenience']
         };
 
-        function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
+        function calcularDistanciaMeters(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -228,11 +179,6 @@
 
         function autocompletarBusqueda(producto) {
             document.getElementById('productSearchInput').value = producto;
-            ejecutarRadarUrgente();
-        }
-
-        function buscarCategoriaRapida(cat) {
-            document.getElementById('productSearchInput').value = cat;
             ejecutarRadarUrgente();
         }
 
@@ -252,117 +198,82 @@
             overlay.style.display = 'block';
             lista.innerHTML = '';
             loader.style.display = 'block';
-            loaderText.innerText = "Comprobando horarios de apertura actuales...";
-
-            if (!navigator.geolocation) {
-                alert("GPS no disponible");
-                loader.style.display = 'none';
-                return;
-            }
+            loaderText.innerText = "Consultando nodos GPS vivos...";
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const latUser = position.coords.latitude;
                     const lonUser = position.coords.longitude;
 
-                    // Obtenemos la hora y minutos actuales del dispositivo del usuario
-                    const ahora = new Date();
-                    const horaActual = ahora.getHours();
-                    const minActual = ahora.getMinutes();
-                    const tiempoActualEnMinutos = (horaActual * 60) + minActual;
-
-                    // Traemos los locales comerciales en un radio de 6km
-                    const url = `https://overpass-api.de/api/interpreter?data=[out:json];(node(around:6000,${latUser},${lonUser})[shop];node(around:6000,${latUser},${lonUser})[amenity];);out tags geom;`;
+                    // Ampliamos el rango a 10.000 metros (10km) para asegurar captar locales nocturnos abiertos
+                    const url = `https://overpass-api.de/api/interpreter?data=[out:json];(node(around:10000,${latUser},${lonUser})[shop];node(around:10000,${latUser},${lonUser})[amenity];);out tags geom;`;
 
                     fetch(url)
                         .then(res => res.json())
                         .then(data => {
                             loader.style.display = 'none';
-                            let validos = [];
-                            const tagsObjetivo = mapeoTiendasCompleto[inputUser] || [inputUser];
+                            let tiendasEncontradas = [];
+                            const categoriasRelevantes = mapeoCategoriasNocturnas[inputUser] || [inputUser];
 
                             data.elements.forEach(el => {
                                 if (!el.tags || !el.tags.name) return;
+                                
                                 const name = el.tags.name.toLowerCase();
                                 const shop = el.tags.shop || '';
                                 const amenity = el.tags.amenity || '';
-                                const openingHours = el.tags.opening_hours || '';
 
-                                // 1. Comprobamos la relevancia del producto
-                                let matchProducto = tagsObjetivo.some(t => shop === t || amenity === t || name.includes(inputUser));
+                                // Verificamos si encaja con el tipo de tienda que buscamos o si el nombre contiene la palabra clave
+                                let cumpleFiltro = categoriasRelevantes.some(cat => shop === cat || amenity === cat || name.includes(inputUser));
 
-                                if (matchProducto) {
-                                    // 2. FILTRO DE HORARIO CRUCIAL (Especialmente para la madrugada)
-                                    let estaAbierto = false;
-
-                                    // Si es una gasolinera o tienda etiquetada 24/7, pasa directo
-                                    if (shop === 'fuel' || openingHours.includes('24/7') || openingHours.toLowerCase().includes('24 hours')) {
-                                        estaAbierto = true;
-                                    } else if (openingHours) {
-                                        // Intentar analizar reglas básicas si tiene horario registrado (ej: 09:00-22:00)
-                                        const matches = openingHours.match(/(\d{2}):(\d{2})\s*-\s*(\d{2}):(\d{2})/);
-                                        if (matches) {
-                                            const promH = parseInt(matches[1]) * 60 + parseInt(matches[2]);
-                                            const cierH = parseInt(matches[3]) * 60 + parseInt(matches[4]);
-                                            
-                                            if (cierH < promH) { // Cierra después de medianoche
-                                                if (tiempoActualEnMinutos >= promH || tiempoActualEnMinutos <= cierH) estaAbierto = true;
-                                            } else {
-                                                if (tiempoActualEnMinutos >= promH && tiempoActualEnMinutos <= cierH) estaAbierto = true;
-                                            }
-                                        }
-                                    } else {
-                                        // Si no tiene horario registrado, pero estamos de madrugada, asumimos por seguridad que está CERRADO,
-                                        // a menos que sea un tipo de tienda que suele abrir (como farmacias de guardia o convenience)
-                                        if (horaActual >= 1 && horaActual < 6) {
-                                            if (shop === 'convenience' || amenity === 'pharmacy') estaAbierto = true;
-                                        } else {
-                                            estaAbierto = true;
-                                        }
-                                    }
-
-                                    // Si pasa el filtro de estar abierto, calculamos distancia
-                                    if (estaAbierto) {
-                                        const d = calcularDistanciaKm(latUser, lonUser, el.lat, el.lon);
-                                        validos.push({
-                                            name: el.tags.name,
-                                            dist: d,
-                                            tipo: shop || amenity,
-                                            addr: el.tags['addr:street'] ? `${el.tags['addr:street']} ${el.tags['addr:housenumber'] || ''}` : 'Zona comercial cercana'
-                                        });
-                                    }
+                                if (cumpleFiltro) {
+                                    const distancia = calcularDistanciaMeters(latUser, lonUser, el.lat, el.lon);
+                                    tiendasEncontradas.push({
+                                        name: el.tags.name,
+                                        dist: distancia,
+                                        tipo: shop || amenity,
+                                        calle: el.tags['addr:street'] ? `${el.tags['addr:street']} ${el.tags['addr:housenumber'] || ''}` : 'Ubicación cercana'
+                                    });
                                 }
                             });
 
-                            // Ordenar estrictamente por los metros de cercanía reales
-                            validos.sort((a,b) => a.dist - b.dist);
+                            // ORDEN ESTRICTO: El comercio que tengas más cerca de tus pies primero
+                            tiendasEncontradas.sort((a,b) => a.dist - b.dist);
 
-                            if(validos.length === 0) {
-                                lista.innerHTML = `<p style="font-size:13px; color:var(--text-muted); text-align:center; padding: 10px;">⚠️ No se han detectado locales comerciales abiertos ahora mismo para este producto a tu alrededor.</p>`;
+                            if(tiendasEncontradas.length === 0) {
+                                lista.innerHTML = `<p style="font-size:13px; text-align:center; padding:10px; color:var(--text-muted);">No se detectan gasolineras o tiendas 24h compatibles en un radio de 10km.</p>`;
                                 return;
                             }
 
-                            validos.slice(0, 4).forEach(t => {
+                            // Renderizamos los 4 locales comerciales más cercanos reales
+                            tiendasEncontradas.slice(0, 4).forEach(t => {
                                 const distTxt = t.dist < 1 ? `${Math.round(t.dist * 1000)} metros` : `${t.dist.toFixed(1)} km`;
-                                let flagTipo = t.tipo === 'fuel' ? '⛽ Estación de Servicio' : '🏪 Tienda / Local Abierto';
-                                
+                                let etiquetaComercio = "🏪 Establecimiento comercial";
+                                if (t.tipo === 'fuel') etiquetaComercio = "⛽ Gasolinera (Abierta de noche)";
+                                if (t.tipo === 'convenience') etiquetaComercio = "🏪 Tienda 24h / Conveniencia";
+
                                 const div = document.createElement('div');
                                 div.className = 'shop-card';
                                 div.innerHTML = `
                                     <div class="shop-header">
                                         <h5 class="shop-title">${t.name}</h5>
-                                        <span class="badge-open">🟢 ABIERTO AHORA</span>
+                                        <span class="badge-open">Abierto</span>
                                     </div>
-                                    <p style="margin:6px 0 0; font-size:12px; color:#cbd5e1;">📍 Distancia: <strong>${distTxt}</strong></p>
-                                    <p style="margin:2px 0 0; font-size:11px; color:var(--text-muted);">${flagTipo}</p>
-                                    <p style="margin:4px 0 0; font-size:11px; color:#64748b; border-top:1px solid rgba(255,255,255,0.05); padding-top:4px;">🗺️ ${t.addr}</p>
+                                    <p style="margin:6px 0 0; font-size:13px; color:white;">📍 A <strong>${distTxt}</strong> de ti</p>
+                                    <p style="margin:2px 0 0; font-size:11px; color:var(--text-muted);">${etiquetaComercio}</p>
+                                    <p style="margin:6px 0 0; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.05); padding-top:4px;">🗺️ ${t.calle}</p>
                                 `;
                                 lista.appendChild(div);
                             });
                         })
-                        .catch(() => { loader.style.display = 'none'; });
+                        .catch(() => { 
+                            loader.style.display = 'none'; 
+                            lista.innerHTML = '<p style="text-align:center;color:red;">Error de conexión con la red de mapas.</p>';
+                        });
                 },
-                () => { loader.style.display = 'none'; alert("Activa el GPS"); }
+                () => { 
+                    loader.style.display = 'none'; 
+                    alert("Es necesario dar permisos de GPS para medir la distancia exacta."); 
+                }
             );
         }
     </script>
