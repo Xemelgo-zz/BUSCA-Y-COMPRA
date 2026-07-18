@@ -1,0 +1,9 @@
+{
+  "short_name": "BuscaCompra",
+  "name": "Busca y Compra - Privado",
+  "start_url": "./index.html",
+  "background_color": "#f7f9fc",
+  "theme_color": "#1a365d",
+  "display": "standalone",
+  "orientation": "portrait"
+}
