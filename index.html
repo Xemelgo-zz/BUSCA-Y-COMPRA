@@ -3,163 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador Universal sin Límites</title>
+    <title>Amazon Clone - Buscador Comparador</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: "Amazon Ember", Arial, sans-serif;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f6f8fa;
-            color: #24292e;
+            background-color: #eaeded;
+            color: #0f1111;
+        }
+        /* Barra de navegación estilo Amazon */
+        header {
+            background-color: #131921;
+            padding: 10px 20px;
             display: flex;
-            justify-content: center;
-            padding: 20px;
-            min-height: 100vh;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
         }
-        .container {
+        .logo {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        .logo span {
+            color: #febd69;
+        }
+        .search-container {
+            display: flex;
             width: 100%;
-            max-width: 500px;
-            margin-top: 40px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1f2328;
-            margin-bottom: 8px;
-        }
-        .header p {
-            font-size: 14px;
-            color: #636c76;
-        }
-        .search-box {
-            position: relative;
-            margin-bottom: 20px;
+            max-width: 800px;
+            border-radius: 4px;
+            overflow: hidden;
         }
         .search-input {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            border: 1px solid #d0d7de;
-            border-radius: 8px;
-            background-color: #ffffff;
-            box-shadow: inset 0 1px 0 rgba(20,23,26,0.02);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            flex: 1;
+            padding: 12px;
+            font-size: 15px;
+            border: none;
             outline: none;
         }
-        .search-input:focus {
-            border-color: #0969da;
-            box-shadow: 0 0 0 3px rgba(9,105,218,0.3);
-        }
-        .results-list {
-            list-style: none;
-            background: #ffffff;
-            border: 1px solid #d0d7de;
-            border-radius: 8px;
-            overflow: hidden;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .result-item {
-            padding: 14px 16px;
-            border-bottom: 1px solid #d0d7de;
-            font-size: 15px;
+        .search-btn {
+            background-color: #febd69;
+            border: none;
+            padding: 0 20px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 18px;
+            transition: background 0.2s;
         }
-        .result-item:last-child {
+        .search-btn:hover {
+            background-color: #f3a847;
+        }
+        /* Contenedor de Resultados */
+        main {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .results-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .product-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        @media(min-width: 600px) {
+            .product-card {
+                flex-direction: row;
+            }
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-title {
+            font-size: 18px;
+            color: #0f1111;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        /* Precios al estilo Amazon */
+        .price-row {
+            margin: 10px 0;
+        }
+        .amazon-price {
+            font-size: 28px;
+            font-weight: 500;
+            color: #0f1111;
+        }
+        .amazon-price cents {
+            font-size: 14px;
+            vertical-align: super;
+        }
+        .badge {
+            background-color: #c45500;
+            color: white;
+            padding: 3px 6px;
+            font-size: 12px;
+            border-radius: 2px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        /* Tabla Comparativa de Sitios */
+        .compare-table {
+            width: 100%;
+            max-width: 350px;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: #f7f7f7;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        .compare-table th, .compare-table td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .compare-table th {
+            background-color: #f0f2f2;
+            color: #565959;
+            font-weight: 700;
+        }
+        .compare-table tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .compare-table tr:last-child {
             border-bottom: none;
         }
-        .result-item:hover {
-            background-color: #f6f8fa;
+        .diff-plus {
+            color: #b12704; /* Más caro en otro sitio */
+            font-weight: bold;
         }
-        .result-icon {
-            color: #57606a;
+        .diff-minus {
+            color: #007600; /* Más barato en otro sitio */
+            font-weight: bold;
         }
-        .status-message {
-            padding: 16px;
+        .no-results {
             text-align: center;
-            color: #57606a;
-            font-size: 14px;
-            font-style: italic;
+            padding: 40px;
+            color: #565959;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>🔍 Buscador Universal</h1>
-        <p>Introduce cualquier término. Búsqueda instantánea sin límites.</p>
-    </div>
+    <header>
+        <a href="#" class="logo">amazon<span>.es</span></a>
+        <div class="search-container">
+            <input type="text" id="query" class="search-input" placeholder="Buscar cualquier producto..." autocomplete="off">
+            <button class="search-btn" id="searchBtn">🔍</button>
+        </div>
+    </header>
 
-    <div class="search-box">
-        <input type="text" id="query" class="search-input" placeholder="Buscar cualquier cosa..." autocomplete="off">
-    </div>
+    <main>
+        <div id="resultsTitle" class="results-title" style="display:none;">Resultados de búsqueda</div>
+        <div id="resultsContainer">
+            <div class="no-results">Introduce un producto arriba para buscar y comparar precios sin límites.</div>
+        </div>
+    </main>
 
-    <ul id="results" class="results-list"></ul>
-</div>
+    <script>
+        // Tu base de datos con Precios de Amazon y Comparativas de otros sitios
+        const baseDatos = [
+            {
+                nombre: "Laptop Gamer ASUS ROG Strix G16",
+                precioAmazon: 1399.99,
+                comparativa: [
+                    { sitio: "MediaMarkt", precio: 1450.00 },
+                    { sitio: "PcComponentes", precio: 1385.50 },
+                    { sitio: "El Corte Inglés", precio: 1499.00 }
+                ]
+            },
+            {
+                nombre: "Cafetera Espresso De'Longhi Dedica",
+                precioAmazon: 219.00,
+                comparativa: [
+                    { sitio: "Carrefour", precio: 239.00 },
+                    { sitio: "Fnac", precio: 225.00 },
+                    { sitio: "Platanomelón Store", precio: 240.00 }
+                ]
+            },
+            {
+                nombre: "Apple iPhone 15 Pro Max (256 GB)",
+                precioAmazon: 1249.50,
+                comparativa: [
+                    { sitio: "Apple Store", precio: 1469.00 },
+                    { sitio: "MediaMarkt", precio: 1259.00 },
+                    { sitio: "PcComponentes", precio: 1239.00 }
+                ]
+            },
+            {
+                nombre: "Auriculares Inalámbricos Sony WH-1000XM4",
+                precioAmazon: 249.00,
+                comparativa: [
+                    { sitio: "El Corte Inglés", precio: 299.00 },
+                    { sitio: "Fnac", precio: 259.99 }
+                ]
+            }
+        ];
 
-<script>
-    // Tu lista de productos editables
-    const baseDatos = [
-        "Laptop Gamer ASUS Rog STRIX",
-        "Monitor Curvo 27 pulgadas Samsung",
-        "Cafetera Espresso Delonghi Dedica",
-        "Curso Completo de Python 2026",
-        "Teclado Mecánico RGB Logitech",
-        "Zapatillas de Running Nike Air Max",
-        "Café en grano Premium Arábica",
-        "iPhone 15 Pro Max 256GB",
-        "Auriculares Inalámbricos Sony WH-1000XM4",
-        "Camiseta Oficial Selección Española",
-        "Smart TV 55 Pulgadas LG OLED",
-        "Ratón Ergonómico Inalámbrico MX Master",
-        "Mochila Impermeable antirrobo para viajes"
-    ];
+        const input = document.getElementById('query');
+        const btn = document.getElementById('searchBtn');
+        const container = document.getElementById('resultsContainer');
+        const title = document.getElementById('resultsTitle');
 
-    const input = document.getElementById('query');
-    const resultsContainer = document.getElementById('results');
+        function ejecutarBusqueda() {
+            const valor = input.value.trim().toLowerCase();
+            
+            if (valor === "") {
+                title.style.display = "none";
+                container.innerHTML = '<div class="no-results">Por favor, escribe algo para buscar.</div>';
+                return;
+            }
 
-    input.addEventListener('input', () => {
-        const valor = input.value.trim().toLowerCase();
-        
-        if (valor === "") {
-            resultsContainer.style.display = "none";
-            resultsContainer.innerHTML = "";
-            return;
+            const filtrados = baseDatos.filter(item => item.nombre.toLowerCase().includes(valor));
+            container.innerHTML = "";
+
+            if (filtrados.length > 0) {
+                title.style.display = "block";
+                filtrados.forEach(prod => {
+                    // Separar euros y céntimos para el diseño visual de Amazon
+                    const [euros, centimos] = prod.precioAmazon.toFixed(2).split('.');
+
+                    // Generar las filas de la tabla comparativa calculando la diferencia exacta
+                    let filasComparativa = "";
+                    prod.comparativa.forEach(c => {
+                        const diferencia = c.precio - prod.precioAmazon;
+                        let claseDiff = "";
+                        let textoDiff = "";
+
+                        if (diferencia > 0) {
+                            claseDiff = "diff-plus";
+                            textoDiff = `+${diferencia.toFixed(2)}€`;
+                        } else if (diferencia < 0) {
+                            claseDiff = "diff-minus";
+                            textoDiff = `${diferencia.toFixed(2)}€`;
+                        } else {
+                            textoDiff = "Igual";
+                        }
+
+                        filasComparativa += `
+                            <tr>
+                                <td>${c.sitio}</td>
+                                <td>${c.precio.toFixed(2)}€</td>
+                                <td class="${claseDiff}">${textoDiff}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Construcción de la tarjeta de producto
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="product-info">
+                            <span class="badge">Nº1 más vendido</span>
+                            <h2 class="product-title">${prod.nombre}</h2>
+                            <div class="price-row">
+                                <span class="amazon-price">${euros}<cents>'${centimos}</cents>€</span>
+                            </div>
+                            <p style="font-size:13px; color:#565959;">Envío GRATIS en Amazon</p>
+                        </div>
+                        <div>
+                            <table class="compare-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sitio</th>
+                                        <th>Precio</th>
+                                        <th>Diferencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasComparativa}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                title.style.display = "none";
+                container.innerHTML = `<div class="no-results">❌ No se encontraron coincidencias para "${input.value}".</div>`;
+            }
         }
 
-        // Busca coincidencias en tiempo real
-        const filtrados = baseDatos.filter(item => item.toLowerCase().includes(valor));
-
-        resultsContainer.style.display = "block";
-        resultsContainer.innerHTML = "";
-
-        if (filtrados.length > 0) {
-            filtrados.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'result-item';
-                li.innerHTML = `<span class="result-icon">📦</span> <span>${item}</span>`;
-                resultsContainer.appendChild(li);
-            });
-        } else {
-            const li = document.createElement('li');
-            li.className = 'status-message';
-            li.textContent = `❌ Sin coincidencias para "${input.value}".`;
-            resultsContainer.appendChild(li);
-        }
-    });
-</script>
-
+        // Eventos para buscar con click o con Enter
+        btn.addEventListener('click', ejecutarBusqueda);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') ejecutarBusqueda(); });
+    </script>
 </body>
 </html>
