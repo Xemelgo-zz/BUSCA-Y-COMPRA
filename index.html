@@ -1,261 +1,34 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AuraMarket - Tu Comparador Premium</title>
-    <style>
-        :root {
-            --amazon-orange: #ff9900;
-            --amazon-blue: #131921;
-            --bg-light: #eaeded;
-            --card-white: #ffffff;
-            --text-dark: #0f1111;
-            --text-muted: #565959;
-            --accent-green: #007600;
-            --ali-red: #e62e04;
-        }
+def buscar_en_sistema(termino, base_de_datos):
+    # Limpiamos los espacios y pasamos a minúsculas para que la búsqueda no falle
+    termino_limpio = termino.strip().lower()
+    
+    if not termino_limpio:
+        return "⚠️ Por favor, ingresa algo para buscar."
+    
+    # Buscamos coincidencias en cualquier parte del texto
+    resultados = [item for item in base_de_datos if termino_limpio in item.lower()]
+    
+    # Mostramos los resultados
+    if resultados:
+        print(f"\n🔍 Resultados para '{termino}': ({len(resultados)} encontrados)")
+        for idx, producto in enumerate(resultados, 1):
+            print(f"  {idx}. {producto}")
+    else:
+        print(f"\n❌ No se encontró nada para '{termino}'. ¡Todo el catálogo está disponible pero este término no coincide!")
 
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            font-family: "Amazon Ember", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+# Tu base de datos sin límites de indexación
+inventario = [
+    "Laptop Gamer ASUS Rog",
+    "Monitor Curvo 27 pulgadas",
+    "Cafetera Espresso Delonghi",
+    "Curso Completo de Python 2026",
+    "Teclado Mecánico RGB",
+    "Zapatillas de Running Nike",
+    "Café en grano Premium"
+]
 
-        /* NAVBAR AL ESTILO DE TU PROPIA MARCA */
-        .navbar {
-            background-color: var(--amazon-blue);
-            padding: 12px 16px;
-            display: flex; flex-direction: column; gap: 10px;
-            position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .brand {
-            color: white; font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px;
-        }
-        .brand span { color: var(--amazon-orange); }
-
-        .search-container {
-            display: flex; background: white; border-radius: 4px; overflow: hidden;
-        }
-        .search-container input {
-            flex: 1; border: none; padding: 12px; font-size: 15px; outline: none;
-        }
-        .search-container button {
-            background: var(--amazon-orange); border: none; width: 50px; cursor: pointer; font-size: 18px;
-        }
-
-        .main-content { padding: 16px; max-width: 600px; margin: 0 auto; }
-
-        /* VISTA DE PRODUCTO PRINCIPAL */
-        .product-hero {
-            background: var(--card-white); border-radius: 8px; padding: 16px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; display: none;
-        }
-
-        .img-wrapper {
-            width: 100%; height: 220px; display: flex; justify-content: center; align-items: center;
-            background: #f7f7f7; border-radius: 6px; overflow: hidden; margin-bottom: 15px;
-        }
-        .img-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-        .prod-title { font-size: 18px; font-weight: 500; margin: 0 0 6px 0; line-height: 1.3; }
-        .rating { color: var(--amazon-orange); font-size: 14px; margin-bottom: 15px; }
-
-        /* SECCIÓN DE COMPARATIVA */
-        .comp-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
-
-        .market-option {
-            background: var(--card-white); border: 1px solid #d5d9d9; border-radius: 8px;
-            padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-            transition: border-color 0.2s;
-        }
-        .market-option:hover { border-color: var(--amazon-orange); }
-
-        .market-badge { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 15px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        
-        .op-local .dot { background: var(--accent-green); }
-        .op-amz .dot { background: var(--amazon-orange); }
-        .op-ali .dot { background: var(--ali-red); }
-
-        .delivery-info { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-        
-        .price-box { text-align: right; }
-        .price-tag { font-size: 22px; font-weight: bold; color: var(--text-dark); }
-        
-        .btn-action {
-            display: inline-block; background: #ffd814; border: 1px solid #fcd200;
-            color: #0f1111; padding: 6px 12px; border-radius: 20px; font-size: 12px;
-            text-decoration: none; font-weight: 500; margin-top: 6px; text-align: center;
-            box-shadow: 0 2px 5px rgba(213,217,217,.5);
-        }
-        .btn-action.local { background: #a7f3d0; border-color: #6ee7b7; }
-
-        /* SUGERENCIAS DE INICIO */
-        .suggestions { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .suggestions h3 { margin-top: 0; font-size: 16px; color: var(--text-muted); }
-        .sug-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .sug-item {
-            background: #f7f7f7; padding: 12px; border-radius: 6px; text-align: center; cursor: pointer; font-size: 13px; font-weight: bold;
-        }
-        .sug-item:hover { background: #ededed; }
-    </style>
-</head>
-<body>
-
-    <!-- MENÚ DE NAVEGACIÓN -->
-    <nav class="navbar">
-        <div class="brand">⚡ Aura<span>Market</span></div>
-        <div class="search-container">
-            <input type="text" id="mainSearch" placeholder="Busca auriculares, café, cargador...">
-            <button onclick="ejecutarBusqueda()">🔍</button>
-        </div>
-    </nav>
-
-    <div class="main-content">
-
-        <!-- BLOQUE DE BIENVENIDA / SUGERENCIAS -->
-        <div id="panelInicio" class="suggestions">
-            <h3>Productos Destacados en tu zona</h3>
-            <div class="sug-grid">
-                <div class="sug-item" onclick="buscarDirecto('Auriculares Bluetooth')">🎧 Auriculares</div>
-                <div class="sug-item" onclick="buscarDirecto('Café Molido')">☕ Café Premium</div>
-                <div class="sug-item" onclick="buscarDirecto('Cargador USB-C')">🔌 Cargador Rápido</div>
-                <div class="sug-item" onclick="buscarDirecto('Zapatillas Deportivas')">👟 Zapatillas</div>
-            </div>
-        </div>
-
-        <!-- CONTENEDOR DE RESULTADO DEL PRODUCTO -->
-        <div id="resultadoProducto" class="product-hero">
-            <div class="img-wrapper">
-                <img id="prodImagen" src="" alt="Producto">
-            </div>
-            <h2 class="prod-title" id="prodNombre">Nombre del Producto</h2>
-            <div class="rating">⭐⭐⭐⭐⭐ <span style="color: #007185; font-size: 12px;">(1.240 valoraciones)</span></div>
-            
-            <hr style="border: 0; border-top: 1px solid #e7e7e7; margin: 15px 0;">
-            
-            <div class="comp-title">Opciones de Compra Disponibles</div>
-
-            <!-- TIENDA LOCAL -->
-            <div class="market-option op-local">
-                <div>
-                    <div class="market-badge"><span class="dot"></span> Comercio Local Cercano</div>
-                    <div class="delivery-info" id="localUbicacion">Disponible a 1.2 km de ti</div>
-                    <a href="#" id="linkLocal" class="btn-action local">📍 Cómo Llegar (GPS)</a>
-                </div>
-                <div class="price-box">
-                    <div class="price-tag" id="precioLocal">0.00€</div>
-                    <div style="font-size: 11px; color: var(--accent-green); font-weight: bold;">Recogida en 15 min</div>
-                </div>
-            </div>
-
-            <!-- AMAZON -->
-            <div class="market-option op-amz">
-                <div>
-                    <div class="market-badge"><span class="dot"></span> Amazon España</div>
-                    <div class="delivery-info">Envío Prime Garantizado</div>
-                    <a href="#" id="linkAmz" target="_blank" class="btn-action">📦 Ver Oferta</a>
-                </div>
-                <div class="price-box">
-                    <div class="price-tag" id="precioAmz">0.00€</div>
-                    <div style="font-size: 11px; color: #c45500;">Entrega: Mañana</div>
-                </div>
-            </div>
-
-            <!-- ALIEXPRESS -->
-            <div class="market-option op-ali">
-                <div>
-                    <div class="market-badge"><span class="dot"></span> AliExpress Global</div>
-                    <div class="delivery-info">Envío desde almacén internacional</div>
-                    <a href="#" id="linkAli" target="_blank" class="btn-action">✈️ Ver Precio Bajo</a>
-                </div>
-                <div class="price-box">
-                    <div class="price-tag" id="precioAli">0.00€</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">Entrega: 9-12 días</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // BASE DE DATOS DE PRODUCTOS REALES CON IMÁGENES Y PRECIOS INDEXADOS
-        const BASE_DATOS = {
-            "auriculares": {
-                nombre: "Auriculares Inalámbricos Bluetooth con Cancelación de Ruido",
-                imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60",
-                local: 29.99, amazon: 24.95, aliex: 14.20,
-                tiendaText: "Bazar Tecnológico o Electro Tienda"
-            },
-            "cafe": {
-                nombre: "Café en Grano Arábica Selección Premium (1kg)",
-                imagen: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500&auto=format&fit=crop&q=60",
-                local: 8.50, amazon: 11.90, aliex: 6.80,
-                tiendaText: "Supermercado del Barrio o Tienda Gourmet"
-            },
-            "cargador": {
-                nombre: "Cargador Rápido USB-C de 25W compatible con Móviles de Nueva Generación",
-                imagen: "https://images.unsplash.com/photo-1622445262465-2481c4574875?w=500&auto=format&fit=crop&q=60",
-                local: 15.00, amazon: 12.99, aliex: 4.50,
-                tiendaText: "Tienda de Electrónica o MultiBazar"
-            },
-            "zapatillas": {
-                nombre: "Zapatillas Deportivas Running Ultra Confort Ligere",
-                imagen: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60",
-                local: 59.90, amazon: 49.95, aliex: 32.10,
-                tiendaText: "Zapatería Deportiva Local"
-            }
-        };
-
-        function buscarDirecto(termino) {
-            document.getElementById('mainSearch').value = termino;
-            ejecutarBusqueda();
-        }
-
-        function ejecutarBusqueda() {
-            const query = document.getElementById('mainSearch').value.toLowerCase().trim();
-            let claveEncontrada = null;
-
-            // Buscador por aproximación de palabra clave
-            if (query.includes("auricular") || query.includes("cascos") || query.includes("headphone")) claveEncontrada = "auriculares";
-            else if (query.includes("cafe") || query.includes("coffee") || query.includes("grano")) claveEncontrada = "cafe";
-            else if (query.includes("cargador") || query.includes("cable") || query.includes("usb")) claveEncontrada = "cargador";
-            else if (query.includes("zapatilla") || query.includes("tenis") || query.includes("bamba")) claveEncontrada = "zapatillas";
-
-            const panelProducto = document.getElementById('resultadoProducto');
-
-            if (claveEncontrada && BASE_DATOS[claveEncontrada]) {
-                const prod = BASE_DATOS[claveEncontrada];
-
-                // Asignar los datos fijos de la interfaz
-                document.getElementById('prodNombre').innerText = prod.nombre;
-                document.getElementById('prodImagen').src = prod.imagen;
-                
-                document.getElementById('precioLocal').innerText = `${prod.local.toFixed(2)} €`;
-                document.getElementById('precioAmz').innerText = `${prod.amazon.toFixed(2)} €`;
-                document.getElementById('precioAli').innerText = `${prod.aliex.toFixed(2)} €`;
-                
-                document.getElementById('localUbicacion').innerText = `Disponible ahora en: ${prod.tiendaText}`;
-
-                // Configurar enlaces directos funcionales
-                const esApple = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                document.getElementById('linkLocal').href = esApple 
-                    ? `maps://?q=${encodeURIComponent(prod.tiendaText + " abierto ahora")}` 
-                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(prod.tiendaText + " abierto ahora")}`;
-                
-                document.getElementById('linkAmz').href = `https://www.amazon.es/s?k=${encodeURIComponent(prod.nombre)}`;
-                document.getElementById('linkAli').href = `https://es.aliexpress.com/wholesale?SearchText=${encodeURIComponent(prod.nombre)}`;
-
-                // Mostrar la ficha de producto
-                panelProducto.style.display = 'block';
-            } else {
-                alert("Producto de prueba no indexado. Prueba buscando: 'Auriculares', 'Café', 'Cargador' o 'Zapatillas'.");
-            }
-        }
-    </script>
-</body>
-</html>
+# --- PRUEBAS DE BUSQUEDA ---
+# Puedes cambiar lo que está entre comillas para probar diferentes búsquedas:
+buscar_en_sistema("cafe", inventario)
+buscar_en_sistema("LAPTOP", inventario)
+buscar_en_sistema("pantalla", inventario) # Caso donde no encuentra nada
