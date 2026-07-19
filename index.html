@@ -1,34 +1,116 @@
-def buscar_en_sistema(termino, base_de_datos):
-    # Limpiamos los espacios y pasamos a minúsculas para que la búsqueda no falle
-    termino_limpio = termino.strip().lower()
-    
-    if not termino_limpio:
-        return "⚠️ Por favor, ingresa algo para buscar."
-    
-    # Buscamos coincidencias en cualquier parte del texto
-    resultados = [item for item in base_de_datos if termino_limpio in item.lower()]
-    
-    # Mostramos los resultados
-    if resultados:
-        print(f"\n🔍 Resultados para '{termino}': ({len(resultados)} encontrados)")
-        for idx, producto in enumerate(resultados, 1):
-            print(f"  {idx}. {producto}")
-    else:
-        print(f"\n❌ No se encontró nada para '{termino}'. ¡Todo el catálogo está disponible pero este término no coincide!")
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador sin Límites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #24292e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2ea44f;
+        }
+        .results {
+            list-style: none;
+            padding: 0;
+        }
+        .results li {
+            padding: 10px;
+            background: white;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border-left: 4px solid #2ea44f;
+        }
+        .no-results {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
 
-# Tu base de datos sin límites de indexación
-inventario = [
-    "Laptop Gamer ASUS Rog",
-    "Monitor Curvo 27 pulgadas",
-    "Cafetera Espresso Delonghi",
-    "Curso Completo de Python 2026",
-    "Teclado Mecánico RGB",
-    "Zapatillas de Running Nike",
-    "Café en grano Premium"
-]
+    <h2>🔍 Buscador Global de Productos</h2>
+    <p>Busca cualquier cosa en la base de datos sin restricciones de indexación:</p>
 
-# --- PRUEBAS DE BUSQUEDA ---
-# Puedes cambiar lo que está entre comillas para probar diferentes búsquedas:
-buscar_en_sistema("cafe", inventario)
-buscar_en_sistema("LAPTOP", inventario)
-buscar_en_sistema("pantalla", inventario) # Caso donde no encuentra nada
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Escribe tu búsqueda aquí...">
+        <button onclick="buscar()">Buscar</button>
+    </div>
+
+    <ul id="resultsList" class="results"></ul>
+
+    <script>
+        // Tu lista de productos/artículos directamente en el código
+        const baseDeDatos = [
+            "Laptop Gamer ASUS Rog",
+            "Monitor Curvo 27 pulgadas",
+            "Cafetera Espresso Delonghi",
+            "Curso Completo de Python 2026",
+            "Teclado Mecánico RGB",
+            "Zapatillas de Running Nike",
+            "Café en grano Premium",
+            "iPhone 15 Pro Max",
+            "Auriculares Inalámbricos Sony"
+        ];
+
+        function buscar() {
+            const termino = document.getElementById("searchInput").value.trim().toLowerCase();
+            const listaHTML = document.getElementById("resultsList");
+            
+            // Limpiamos pantalla anterior
+            listaHTML.innerHTML = "";
+
+            if (termino === "") {
+                listaHTML.innerHTML = "<li class='no-results'>⚠️ Por favor, escribe algo para buscar.</li>";
+                return;
+            }
+
+            // Filtramos la lista sin importar mayúsculas/minúsculas
+            const filtrados = baseDeDatos.filter(item => item.toLowerCase().includes(termino));
+
+            // Mostramos los resultados en la web
+            if (filtrados.length > 0) {
+                filtrados.forEach(producto => {
+                    const li = document.createElement("li");
+                    li.textContent = producto;
+                    listaHTML.appendChild(li);
+                });
+            } else {
+                listaHTML.innerHTML = `<li class='no-results'>❌ No se encontró nada para "${document.getElementById("searchInput").value}".</li>`;
+            }
+        }
+
+        // Permite buscar también al presionar la tecla "Enter"
+        document.getElementById("searchInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                buscar();
+            }
+        });
+    </script>
+</body>
+</html>
