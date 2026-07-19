@@ -1,231 +1,886 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Chollos Globales - El Más Barato del Mundo</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-        }
-        body {
-            background-color: #f0f3f6;
-            color: #1a1a1a;
-        }
-        header {
-            background: linear-gradient(135deg, #1f2937, #111827);
-            padding: 20px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-        .logo span {
-            color: #10b981;
-        }
-        .search-container {
-            display: flex;
-            width: 100%;
-            max-width: 650px;
-            margin: 0 auto;
-            border-radius: 50px;
-            overflow: hidden;
-            background: white;
-            padding: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        .search-input {
-            flex: 1;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            border-radius: 50px 0 0 50px;
-        }
-        .search-btn {
-            background-color: #10b981;
-            color: white;
-            border: none;
-            padding: 0 26px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: background 0.2s;
-        }
-        .search-btn:hover {
-            background-color: #059669;
-        }
-        main {
-            max-width: 850px;
-            margin: 30px auto;
-            padding: 0 15px;
-        }
-        .status {
-            text-align: center;
-            color: #6b7280;
-            font-size: 15px;
-            margin-top: 40px;
-            line-height: 1.5;
-        }
-        .deal-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e5e7eb;
-        }
-        .deal-header {
-            margin-bottom: 15px;
-        }
-        .deal-tag {
-            background-color: #fee2e2;
-            color: #dc2626;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        .deal-title {
-            font-size: 20px;
-            color: #111827;
-            font-weight: 800;
-        }
-        .grid-platforms {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        @media(min-width: 550px) {
-            .grid-platforms {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .market-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            border-radius: 8px;
-            transition: transform 0.15s, box-shadow 0.15s;
-            color: white;
-        }
-        .market-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        /* Colores corporativos de los mayores mercados low-cost */
-        .btn-google { background-color: #4285f4; }
-        .btn-aliexpress { background-color: #ff4747; }
-        .btn-ebay { background-color: #e53238; }
-        .btn-chollos { background-color: #f59e0b; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>radar — el precio más bajo, no el más lejano</title>
+<meta name="description" content="Radar localiza ofertas de productos cerca de ti y las ordena por precio o por distancia." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1517;
+    --ink-soft:#182124;
+    --ink-line:rgba(246,244,239,0.12);
+    --paper:#EFF3F1;
+    --paper-raise:#FFFFFF;
+    --paper-line:#DCE3DF;
+    --coral:#FF5A36;
+    --coral-ink:#B33A1F;
+    --teal:#0FA98E;
+    --teal-soft:#DCF2EC;
+    --slate:#5B6A67;
+    --slate-dim:#8B9895;
+    --radius-s:10px;
+    --radius-m:18px;
+    --radius-l:28px;
+    --maxw:1120px;
+  }
 
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border-left-color: #10b981;
-            animation: spin 0.8s linear infinite;
-            margin: 30px auto;
-            display: none;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Bricolage Grotesque', 'Inter', sans-serif;
+    margin:0;
+    letter-spacing:-0.02em;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  img,svg{ display:block; max-width:100%; }
+  button{ font-family:inherit; cursor:pointer; }
+  :focus-visible{
+    outline:2px solid var(--coral);
+    outline-offset:3px;
+  }
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:50;
+    padding:18px 0;
+    transition:background .3s ease, border-color .3s ease, padding .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.nav.scrolled{
+    background:rgba(239,243,241,0.86);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--paper-line);
+    padding:12px 0;
+  }
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-weight:700;
+    font-size:19px;
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .brand .dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--coral);
+    box-shadow:0 0 0 0 rgba(255,90,54,0.5);
+    animation:pulseDot 2.2s ease-out infinite;
+  }
+  @keyframes pulseDot{
+    0%{ box-shadow:0 0 0 0 rgba(255,90,54,0.45); }
+    70%{ box-shadow:0 0 0 9px rgba(255,90,54,0); }
+    100%{ box-shadow:0 0 0 0 rgba(255,90,54,0); }
+  }
+  .nav-links{
+    display:flex;
+    gap:28px;
+    font-size:14.5px;
+    color:var(--slate);
+  }
+  .nav-links a{ text-decoration:none; }
+  .nav-links a:hover{ color:var(--ink); }
+  .nav-cta{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:9px 16px;
+    border-radius:100px;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  @media (max-width:720px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--ink);
+    color:var(--paper);
+    padding:150px 0 110px;
+    overflow:hidden;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  @media (max-width:900px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero{ padding:130px 0 70px; }
+  }
+  .hero .eyebrow{ color:var(--coral); }
+  .hero h1{
+    font-size:clamp(32px, 4.6vw, 54px);
+    font-weight:700;
+    line-height:1.06;
+    margin:18px 0 20px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--coral);
+  }
+  .hero p.lead{
+    color:rgba(246,244,239,0.72);
+    font-size:17px;
+    max-width:46ch;
+    margin:0 0 32px;
+  }
+  .hero-actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:14px 22px;
+    border-radius:100px;
+    font-weight:600;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .btn-primary:hover{ background:#ff6b46; transform:translateY(-1px); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--paper);
+    border:1px solid var(--ink-line);
+    padding:14px 22px;
+    border-radius:100px;
+    font-weight:500;
+    font-size:15px;
+  }
+  .btn-ghost:hover{ border-color:rgba(246,244,239,0.4); }
+  .geo-status{
+    margin-top:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--slate-dim);
+    min-height:16px;
+  }
+  .geo-status.ok{ color:var(--teal); }
+
+  /* radar visual */
+  .radar-box{
+    position:relative;
+    aspect-ratio:1/1;
+    max-width:440px;
+    margin:0 auto;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, rgba(255,90,54,0.10), transparent 60%);
+  }
+  .radar-ring{
+    position:absolute;
+    inset:0;
+    margin:auto;
+    border:1px solid rgba(246,244,239,0.16);
+    border-radius:50%;
+  }
+  .radar-ring.r1{ width:100%; height:100%; }
+  .radar-ring.r2{ width:72%; height:72%; }
+  .radar-ring.r3{ width:44%; height:44%; }
+  .radar-ring.r4{ width:18%; height:18%; }
+  .radar-sweep{
+    position:absolute;
+    inset:0;
+    margin:auto;
+    width:100%; height:100%;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, rgba(255,90,54,0.32), transparent 34%);
+    animation:spin 5.5s linear infinite;
+    mix-blend-mode:screen;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .radar-center{
+    position:absolute;
+    left:50%; top:50%;
+    width:9px; height:9px;
+    background:var(--coral);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 5px rgba(255,90,54,0.18);
+  }
+  .radar-blip{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 10px 5px 7px;
+    background:rgba(14,21,23,0.9);
+    border:1px solid var(--ink-line);
+    border-radius:100px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--paper);
+    opacity:0;
+    animation:blipIn .5s ease forwards;
+    white-space:nowrap;
+  }
+  .radar-blip .pip{ width:6px; height:6px; border-radius:50%; background:var(--teal); flex:none; }
+  @keyframes blipIn{
+    from{ opacity:0; transform:scale(.6); }
+    to{ opacity:1; transform:scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .radar-sweep{ animation:none; }
+    .brand .dot{ animation:none; }
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{
+    padding:88px 0 80px;
+  }
+  .steps-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:44px;
+    flex-wrap:wrap;
+  }
+  .steps-head h2{
+    font-size:clamp(24px,3vw,32px);
+    max-width:22ch;
+  }
+  .steps-head .eyebrow{ color:var(--coral-ink); margin-bottom:10px; }
+  .steps-head p{ color:var(--slate); max-width:36ch; margin:0; font-size:15px; }
+  .steps-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius-m);
+    overflow:hidden;
+  }
+  @media (max-width:760px){ .steps-grid{ grid-template-columns:1fr; } }
+  .step{
+    background:var(--paper-raise);
+    padding:32px 28px 34px;
+  }
+  .step .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--coral);
+    margin-bottom:18px;
+    display:block;
+  }
+  .step h3{
+    font-size:19px;
+    margin-bottom:10px;
+  }
+  .step p{
+    color:var(--slate);
+    font-size:14.5px;
+    margin:0;
+  }
+
+  /* ---------- SEARCH / RESULTS ---------- */
+  .search-section{
+    padding:20px 0 100px;
+  }
+  .search-panel{
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:var(--radius-l);
+    padding:40px 36px;
+  }
+  @media (max-width:640px){ .search-panel{ padding:28px 20px; } }
+  .search-panel h2{
+    font-size:clamp(22px,2.8vw,28px);
+    margin-bottom:6px;
+  }
+  .search-panel .sub{
+    color:rgba(246,244,239,0.65);
+    font-size:14.5px;
+    margin-bottom:26px;
+  }
+  .search-form{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .search-form input[type="text"]{
+    flex:1 1 260px;
+    background:var(--ink-soft);
+    border:1px solid var(--ink-line);
+    color:var(--paper);
+    padding:15px 18px;
+    border-radius:100px;
+    font-size:15px;
+    font-family:'Inter', sans-serif;
+  }
+  .search-form input::placeholder{ color:var(--slate-dim); }
+  .search-form button{
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:15px 24px;
+    border-radius:100px;
+    font-weight:600;
+    font-size:15px;
+  }
+  .search-form button:hover{ background:#ff6b46; }
+
+  .results-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin:44px 0 20px;
+  }
+  .results-count{
+    font-size:14.5px;
+    color:var(--slate);
+  }
+  .results-count strong{ color:var(--ink); }
+  .sort-toggle{
+    display:inline-flex;
+    background:var(--paper-raise);
+    border:1px solid var(--paper-line);
+    border-radius:100px;
+    padding:4px;
+    gap:4px;
+  }
+  .sort-toggle button{
+    background:transparent;
+    border:none;
+    padding:8px 16px;
+    border-radius:100px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--slate);
+  }
+  .sort-toggle button.active{
+    background:var(--ink);
+    color:var(--paper);
+  }
+
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--paper-raise);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius-m);
+    padding:22px 22px 20px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .card .ribbon{
+    position:absolute;
+    top:-10px; left:20px;
+    background:var(--coral);
+    color:#fff;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:100px;
+  }
+  .card .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .card .cat{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--slate-dim);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  .card .pname{
+    font-size:16px;
+    font-weight:600;
+    margin-top:2px;
+  }
+  .card .price{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:24px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .card hr{
+    border:none;
+    border-top:1px dashed var(--paper-line);
+    margin:0;
+  }
+  .card .meta-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13.5px;
+    color:var(--slate);
+  }
+  .card .store{ font-weight:500; color:var(--ink); }
+  .card .dist{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--teal);
+    font-weight:500;
+  }
+  .card .dist svg{ width:12px; height:12px; }
+
+  .empty-state, .status-line{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--slate);
+    font-size:14.5px;
+  }
+  .empty-state svg{ margin:0 auto 16px; opacity:.5; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--paper-line);
+    padding:40px 0 50px;
+  }
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  footer .brand{ margin-bottom:10px; }
+  footer .note{
+    max-width:52ch;
+    font-size:13.5px;
+    color:var(--slate);
+    line-height:1.6;
+  }
+  footer .note strong{ color:var(--ink); }
+  footer .meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--slate-dim);
+  }
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">🚀 Chollos<span>Mundiales</span></div>
-        <div class="search-container">
-            <input type="text" id="query" class="search-input" placeholder="¿Qué buscas? Encontraremos el precio mínimo del planeta...">
-            <button class="search-btn" id="searchBtn">Buscar</button>
-        </div>
-    </header>
+<header class="nav" id="siteNav">
+  <div class="wrap nav-row">
+    <a href="#top" class="brand"><span class="dot"></span>radar</a>
+    <nav class="nav-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#buscar">Buscar</a>
+      <a href="#nota">Sobre los datos</a>
+    </nav>
+    <button class="nav-cta" onclick="document.getElementById('buscar').scrollIntoView({behavior:'smooth'})">Buscar cerca de ti</button>
+  </div>
+</header>
 
-    <main>
-        <div id="spinner" class="spinner"></div>
-        <div id="resultsContainer">
-            <div class="status">
-                <strong>Rastreador de precios mínimos globales activo.</strong><br>
-                Introduce cualquier marca, modelo o producto para forzar la búsqueda en todo el mercado internacional.
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">● búsqueda por geolocalización</span>
+        <h1>El precio más bajo<br>está <em>más cerca</em><br>de lo que crees.</h1>
+        <p class="lead">Radar localiza ofertas cerca de tu posición y las ordena por precio o por distancia, al instante — sin filtros que se interpongan.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" id="heroLocate">
+            Activar mi ubicación
+          </button>
+          <button class="btn-ghost" onclick="document.getElementById('buscar').scrollIntoView({behavior:'smooth'})">Ir a la búsqueda</button>
+        </div>
+        <div class="geo-status" id="geoStatus">Tu ubicación no se ha compartido todavía.</div>
+      </div>
+      <div class="radar-box" id="radarBox">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <div class="radar-ring r4"></div>
+        <div class="radar-sweep"></div>
+        <div class="radar-center"></div>
+        <!-- blips injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="steps" id="como-funciona">
+    <div class="wrap">
+      <div class="steps-head">
+        <div>
+          <span class="eyebrow">el proceso</span>
+          <h2>Tres pasos, en el orden en que ocurren</h2>
+        </div>
+        <p>Nada de menús interminables: compartes dónde estás, Radar cruza la búsqueda con lo que hay alrededor, y tú eliges cómo ordenar el resultado.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <span class="num">01</span>
+          <h3>Localización</h3>
+          <p>Compartes tu ubicación desde el navegador, o la introduces a mano si prefieres no activar el GPS.</p>
+        </div>
+        <div class="step">
+          <span class="num">02</span>
+          <h3>Rastreo</h3>
+          <p>Radar cruza tu búsqueda con las tiendas y comercios de tu entorno, sin categorías ni filtros previos.</p>
+        </div>
+        <div class="step">
+          <span class="num">03</span>
+          <h3>Comparativa</h3>
+          <p>Ves cada oferta con su precio y su distancia real, y decides tú qué pesa más en cada búsqueda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="search-section" id="buscar">
+    <div class="wrap">
+      <div class="search-panel">
+        <h2>¿Qué estás buscando?</h2>
+        <p class="sub">Escribe cualquier producto. Radar buscará ofertas cerca de tu ubicación actual.</p>
+        <form class="search-form" id="searchForm">
+          <input type="text" id="searchInput" placeholder="Ej. auriculares, arroz, taladro, café…" autocomplete="off" />
+          <button type="submit">Buscar</button>
+        </form>
+      </div>
+
+      <div class="results-bar" id="resultsBar" style="display:none;">
+        <div class="results-count" id="resultsCount"></div>
+        <div class="sort-toggle">
+          <button type="button" data-sort="price" class="active">Más barato</button>
+          <button type="button" data-sort="distance">Más cerca</button>
+        </div>
+      </div>
+
+      <div id="resultsArea">
+        <div class="empty-state" id="emptyState">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto;">
+            <circle cx="12" cy="12" r="9"></circle>
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="12" y1="1" x2="12" y2="4"></line>
+            <line x1="12" y1="20" x2="12" y2="23"></line>
+          </svg>
+          Escribe un producto y pulsa buscar para ver ofertas cerca de ti.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="nota">
+  <div class="wrap footer-row">
+    <div>
+      <a href="#top" class="brand"><span class="dot"></span>radar</a>
+      <div class="meta">interfaz de demostración · sin backend</div>
+    </div>
+    <p class="note">
+      <strong>Sobre los datos:</strong> esta página funciona por completo en el navegador, así que las tiendas y precios que ves son datos de ejemplo generados alrededor de tu ubicación real para mostrar cómo se comportaría la app. La distancia sí se calcula de verdad, con la fórmula de Haversine, a partir de las coordenadas que te da el navegador. Para mostrar ofertas reales de internet haría falta un servidor propio conectado a APIs de comercios o de comparación de precios (Google Places, catálogos de tiendas, etc.), porque un sitio estático como este no puede rastrear la red por su cuenta. El código está comentado en <span class="mono">index.html</span> con el punto exacto donde conectar esa parte.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- NAV SCROLL STATE ---------- */
+  const nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 12);
+  });
+
+  /* ---------- CATÁLOGO DE DEMOSTRACIÓN ----------
+     Estos son los productos "conocidos" por la demo. En una versión real,
+     este catálogo (o la búsqueda en sí) vendría de un backend que consulte
+     APIs externas de comercios/tiendas, no de un array fijo como este. */
+  const CATALOG = [
+    { name: "Auriculares inalámbricos", cat: "Electrónica", base: 59 },
+    { name: "Cargador USB-C 30W", cat: "Electrónica", base: 22 },
+    { name: "Cafetera de goteo", cat: "Hogar", base: 34 },
+    { name: "Taladro percutor", cat: "Bricolaje", base: 68 },
+    { name: "Arroz redondo 1kg", cat: "Alimentación", base: 1.9 },
+    { name: "Aceite de oliva 1L", cat: "Alimentación", base: 6.5 },
+    { name: "Zapatillas running", cat: "Deporte", base: 74 },
+    { name: "Balón de fútbol", cat: "Deporte", base: 21 },
+    { name: "Pienso para gatos 3kg", cat: "Mascotas", base: 16 },
+    { name: "Pañales talla 4, pack", cat: "Bebé", base: 13.5 },
+    { name: "Bombilla LED inteligente", cat: "Hogar", base: 15 },
+    { name: "Mochila portátil 15”", cat: "Electrónica", base: 39 },
+    { name: "Café molido 250g", cat: "Alimentación", base: 4.2 },
+    { name: "Sartén antiadherente 28cm", cat: "Hogar", base: 24 },
+    { name: "Termo acero 500ml", cat: "Hogar", base: 12 },
+  ];
+
+  const STORES = [
+    "Mercado Central", "TecnoValle", "Hogar&Más", "Super Ahorro",
+    "Plaza Norte", "El Rincón", "Distrito Sur", "BazarExpress",
+    "La Esquina", "Comercial Atlántico", "PuntoFresco", "Casa Ribeiro"
+  ];
+
+  /* ---------- ESTADO DE UBICACIÓN ---------- */
+  // Coordenadas por defecto si el usuario no comparte su ubicación
+  // (centro aproximado de España, solo como referencia neutra).
+  let userCoords = { lat: 40.4168, lon: -3.7038, real: false };
+
+  const geoStatusEl = document.getElementById('geoStatus');
+
+  function requestLocation(cb){
+    if (!navigator.geolocation){
+      geoStatusEl.textContent = "Tu navegador no admite geolocalización. Usando ubicación aproximada.";
+      cb && cb();
+      return;
+    }
+    geoStatusEl.textContent = "Localizando…";
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, real: true };
+        geoStatusEl.textContent = "Ubicación activada · resultados calculados desde tu posición real";
+        geoStatusEl.classList.add('ok');
+        spawnRadarBlips();
+        cb && cb();
+      },
+      err => {
+        geoStatusEl.textContent = "No se pudo acceder a tu ubicación. Usando una posición aproximada.";
+        cb && cb();
+      },
+      { enableHighAccuracy:true, timeout:8000 }
+    );
+  }
+
+  document.getElementById('heroLocate').addEventListener('click', () => requestLocation());
+
+  /* ---------- GEOMETRÍA: distancia real (Haversine) ---------- */
+  function haversineKm(lat1, lon1, lat2, lon2){
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI/180;
+    const dLon = (lon2 - lon1) * Math.PI/180;
+    const a = Math.sin(dLat/2)**2 +
+              Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) *
+              Math.sin(dLon/2)**2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  // Genera un punto a X km de distancia y un rumbo aleatorio desde el origen
+  function offsetPoint(lat, lon, distanceKm, bearingDeg){
+    const R = 6371;
+    const bearing = bearingDeg * Math.PI/180;
+    const lat1 = lat * Math.PI/180;
+    const lon1 = lon * Math.PI/180;
+    const lat2 = Math.asin(
+      Math.sin(lat1)*Math.cos(distanceKm/R) +
+      Math.cos(lat1)*Math.sin(distanceKm/R)*Math.cos(bearing)
+    );
+    const lon2 = lon1 + Math.atan2(
+      Math.sin(bearing)*Math.sin(distanceKm/R)*Math.cos(lat1),
+      Math.cos(distanceKm/R) - Math.sin(lat1)*Math.sin(lat2)
+    );
+    return { lat: lat2*180/Math.PI, lon: lon2*180/Math.PI };
+  }
+
+  function normalize(str){
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  /* ---------- GENERAR OFERTAS ----------
+     PUNTO DE CONEXIÓN CON DATOS REALES:
+     En producción, en vez de generar ofertas aleatorias aquí, esta función
+     haría fetch() a tu propio backend, que a su vez consultaría APIs de
+     comercios, catálogos de tiendas o proveedores de precios cerca de
+     userCoords.lat / userCoords.lon. La estructura de "offer" de abajo
+     (nombre, tienda, precio, distancia) es la que tendría que devolver
+     esa API para que el resto de la interfaz funcione igual. */
+  function buildOffers(query){
+    const q = normalize(query.trim());
+    if (!q) return [];
+
+    const matches = CATALOG.filter(p => normalize(p.name).includes(q));
+    if (matches.length === 0) return [];
+
+    const offers = [];
+    matches.forEach(product => {
+      const offerCount = 3 + Math.floor(Math.random()*3); // 3–5 ofertas
+      const usedStores = new Set();
+      for (let i=0; i<offerCount; i++){
+        let store;
+        do { store = STORES[Math.floor(Math.random()*STORES.length)]; }
+        while (usedStores.has(store) && usedStores.size < STORES.length);
+        usedStores.add(store);
+
+        const priceVariance = 0.72 + Math.random()*0.56; // ±28%
+        const price = +(product.base * priceVariance).toFixed(product.base < 5 ? 2 : 2);
+
+        const distanceKm = +(0.3 + Math.random()*7.7).toFixed(1);
+        const bearing = Math.random()*360;
+        const point = offsetPoint(userCoords.lat, userCoords.lon, distanceKm, bearing);
+        const realDistance = haversineKm(userCoords.lat, userCoords.lon, point.lat, point.lon);
+
+        offers.push({
+          product: product.name,
+          category: product.cat,
+          store,
+          price,
+          distance: realDistance,
+        });
+      }
+    });
+    return offers;
+  }
+
+  /* ---------- RENDER DE RESULTADOS ---------- */
+  const resultsArea = document.getElementById('resultsArea');
+  const resultsBar = document.getElementById('resultsBar');
+  const resultsCount = document.getElementById('resultsCount');
+  const sortButtons = document.querySelectorAll('.sort-toggle button');
+
+  let currentOffers = [];
+  let currentSort = 'price';
+
+  function render(){
+    if (currentOffers.length === 0){
+      resultsBar.style.display = 'none';
+      resultsArea.innerHTML = `
+        <div class="empty-state">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto;">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          No hay coincidencias para esa búsqueda en el catálogo de ejemplo. Prueba con "auriculares", "arroz" o "taladro".
+        </div>`;
+      return;
+    }
+
+    const sorted = [...currentOffers].sort((a,b) =>
+      currentSort === 'price' ? a.price - b.price : a.distance - b.distance
+    );
+
+    const cheapestByProduct = {};
+    currentOffers.forEach(o => {
+      if (!cheapestByProduct[o.product] || o.price < cheapestByProduct[o.product]){
+        cheapestByProduct[o.product] = o.price;
+      }
+    });
+
+    resultsBar.style.display = 'flex';
+    resultsCount.innerHTML = `<strong>${sorted.length}</strong> ofertas encontradas${userCoords.real ? '' : ' · ubicación aproximada'}`;
+
+    resultsArea.innerHTML = `<div class="results-grid">${sorted.map(o => {
+      const isBest = o.price === cheapestByProduct[o.product];
+      return `
+        <div class="card">
+          ${isBest ? '<span class="ribbon">Mejor precio</span>' : ''}
+          <div class="top-row">
+            <div>
+              <div class="cat">${o.category}</div>
+              <div class="pname">${o.product}</div>
             </div>
-        </div>
-    </main>
+          </div>
+          <div class="price">${o.price.toFixed(2)}&nbsp;€</div>
+          <hr>
+          <div class="meta-row">
+            <span class="store">${o.store}</span>
+            <span class="dist">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              ${o.distance.toFixed(1)} km
+            </span>
+          </div>
+        </div>`;
+    }).join('')}</div>`;
+  }
 
-    <script>
-        const input = document.getElementById('query');
-        const btn = document.getElementById('searchBtn');
-        const container = document.getElementById('resultsContainer');
-        const spinner = document.getElementById('spinner');
+  document.getElementById('searchForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const q = document.getElementById('searchInput').value;
+    currentOffers = buildOffers(q);
+    render();
+  });
 
-        function buscarMasBarato() {
-            const termino = input.value.trim();
-            if (!termino) return;
+  sortButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSort = btn.dataset.sort;
+      render();
+    });
+  });
 
-            // Interfaz de carga reactiva
-            container.innerHTML = "";
-            spinner.style.display = "block";
+  /* ---------- RADAR HERO: blips decorativos ---------- */
+  function spawnRadarBlips(){
+    const box = document.getElementById('radarBox');
+    box.querySelectorAll('.radar-blip').forEach(b => b.remove());
+    const sample = [...CATALOG].sort(()=>Math.random()-0.5).slice(0,4);
+    sample.forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'radar-blip';
+      const angle = Math.random()*360;
+      const radius = 22 + Math.random()*32; // % del contenedor
+      const x = 50 + radius*Math.cos(angle*Math.PI/180);
+      const y = 50 + radius*Math.sin(angle*Math.PI/180);
+      el.style.left = x + '%';
+      el.style.top = y + '%';
+      el.style.animationDelay = (i*0.35 + 0.2) + 's';
+      el.innerHTML = `<span class="pip"></span>${p.name.split(' ')[0]} · ${p.base.toFixed(0)}€`;
+      box.appendChild(el);
+    });
+  }
 
-            setTimeout(() => {
-                spinner.style.display = "none";
+  // Intentar geolocalizar de forma silenciosa al cargar (el navegador solo
+  // mostrará el permiso si el usuario no lo ha decidido ya antes).
+  spawnRadarBlips();
 
-                // Enlaces exactos a los comparadores de precios mínimos globales en tiempo real
-                const urlGoogleShopping = `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(termino)}+barato`;
-                const urlAliExpress = `https://es.aliexpress.com/w/wholesale-.html?SearchText=${encodeURIComponent(termino)}&sortType=price_asc`;
-                const urlEbay = `https://www.ebay.es/sch/i.html?_nkw=${encodeURIComponent(termino)}&_sop=15`; // Ordenado por precio + envío más bajo
-                const urlChollometro = `https://www.chollometro.com/buscar?q=${encodeURIComponent(termino)}`;
+})();
+</script>
 
-                const card = document.createElement('div');
-                card.className = 'deal-card';
-                card.innerHTML = `
-                    <div class="deal-header">
-                        <span class="deal-tag">🔥 PRECIO MÍNIMO ASEGURADO</span>
-                        <h2 class="deal-title">Búsqueda global: "${termino}"</h2>
-                        <p style="font-size: 14px; color: #4b5563; margin-top: 6px;">Hemos interceptado los motores de liquidación del mercado. Elige una plataforma para ver el coste real e inmediato:</p>
-                    </div>
-                    
-                    <div class="grid-platforms">
-                        <a href="${urlGoogleShopping}" target="_blank" class="market-btn btn-google">
-                            <span>🌍 Comparador Google Shopping</span>
-                            <span>Ver Precios ↗</span>
-                        </a>
-                        <a href="${urlAliExpress}" target="_blank" class="market-btn btn-aliexpress">
-                            <span>🇨🇳 AliExpress (Precio Fábrica Mínimo)</span>
-                            <span>Ver Precios ↗</span>
-                        </a>
-                        <a href="${urlEbay}" target="_blank" class="market-btn btn-ebay">
-                            <span>📦 eBay Global (Outlet y Subastas)</span>
-                            <span>Ver Precios ↗</span>
-                        </a>
-                        <a href="${urlChollometro}" target="_blank" class="market-btn btn-chollos">
-                            <span>🏷️ Cupones y Errores de Precio</span>
-                            <span>Ver Chollos ↗</span>
-                        </a>
-                    </div>
-                `;
-                container.appendChild(card);
-            }, 400); // Pequeña latencia para simular el rastreo real
-        }
-
-        btn.addEventListener('click', buscarMasBarato);
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarMasBarato(); });
-    </script>
 </body>
 </html>
