@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon Global Search - Con Enlaces de Compra</title>
+    <title>Amazon Global Search - Precios Realistas</title>
     <style>
         * {
             box-sizing: border-box;
@@ -106,7 +106,6 @@
             vertical-align: super;
         }
         
-        /* Botón de compra principal estilo Amazon */
         .buy-btn {
             display: inline-block;
             background: #ffd814;
@@ -126,7 +125,6 @@
             border-color: #f2c200;
         }
 
-        /* Tabla Comparativa con enlaces */
         .compare-table {
             width: 100%;
             max-width: 360px;
@@ -181,7 +179,7 @@
     <header>
         <a href="#" class="logo">amazon<span>.search</span></a>
         <div class="search-container">
-            <input type="text" id="query" class="search-input" placeholder="Busca CUALQUIER cosa en internet...">
+            <input type="text" id="query" class="search-input" placeholder="Busca cualquier producto (ej: café, zapatillas, iphone)...">
             <button class="search-btn" id="searchBtn">🔍</button>
         </div>
     </header>
@@ -189,7 +187,7 @@
     <main>
         <div id="spinner" class="spinner"></div>
         <div id="resultsContainer">
-            <div class="status">Busca cualquier artículo. Generaremos tarjetas estilo Amazon con enlaces de compra directos.</div>
+            <div class="status">Busca cualquier artículo. Los precios se adaptarán de forma realista al tipo de producto.</div>
         </div>
     </main>
 
@@ -198,6 +196,31 @@
         const btn = document.getElementById('searchBtn');
         const container = document.getElementById('resultsContainer');
         const spinner = document.getElementById('spinner');
+
+        // Función para calcular un precio base coherente según la palabra clave
+        function calcularPrecioRealista(texto) {
+            const t = texto.toLowerCase();
+            
+            // Tecnología cara (Laptops, Teléfonos, Componentes)
+            if (t.includes("laptop") || t.includes("pc") || t.includes("iphone") || t.includes("macbook") || t.includes("ordenador") || t.includes("tv") || t.includes("television")) {
+                return Math.floor(Math.random() * (1200 - 600) + 600) + 0.99;
+            }
+            // Tecnología media / Audio / Gadgets
+            if (t.includes("auriculares") || t.includes("cascos") || t.includes("teclado") || t.includes("raton") || t.includes("mouse") || t.includes("monitor") || t.includes("pantalla")) {
+                return Math.floor(Math.random() * (180 - 45) + 45) + 0.99;
+            }
+            // Ropa, calzado y hogar
+            if (t.includes("zapatillas") || t.includes("zapatos") || t.includes("camiseta") || t.includes("mochila") || t.includes("cafetera") || t.includes("silla")) {
+                return Math.floor(Math.random() * (95 - 25) + 25) + 0.99;
+            }
+            // Alimentación, libros y cosas pequeñas
+            if (t.includes("cafe") || t.includes("arroz") || t.includes("chocolate") || t.includes("libro") || t.includes("pasta") || t.includes("leche")) {
+                return Math.floor(Math.random() * (12 - 2) + 2) + 0.49;
+            }
+            
+            // Rango por defecto para cualquier otra cosa común
+            return Math.floor(Math.random() * (45 - 12) + 12) + 0.95;
+        }
 
         async function buscarEnInternet() {
             const termino = input.value.trim();
@@ -222,7 +245,7 @@
                 if (productosAMostrar.length === 0) {
                     productosAMostrar = [
                         `${termino} Standard Edition`,
-                        `${termino} Pro Series Premium`
+                        `${termino} Pack Premium`
                     ];
                 }
 
@@ -230,16 +253,16 @@
                 container.innerHTML = "";
 
                 productosAMostrar.forEach(nombreProducto => {
-                    const precioBase = Math.floor(Math.random() * (290 - 15) + 15) + 0.99;
+                    // Calculamos el precio realista basado en el término buscado
+                    const precioBase = calcularPrecioRealista(nombreProducto);
                     const [euros, centimos] = precioBase.toFixed(2).split('.');
                     
-                    // Enlace dinámico de compra para Amazon España
                     const linkAmazon = `https://www.amazon.es/s?k=${encodeURIComponent(nombreProducto)}`;
 
                     const tiendas = [
-                        { nombre: "AliExpress", factor: 0.88, urlBase: "https://es.aliexpress.com/w/wholesale-.html?SearchText=" },
+                        { nombre: "AliExpress", factor: 0.89, urlBase: "https://es.aliexpress.com/w/wholesale-.html?SearchText=" },
                         { nombre: "El Corte Inglés", factor: 1.12, urlBase: "https://www.elcorteingles.es/buscar/?s=" },
-                        { nombre: "MediaMarkt", factor: 0.96, urlBase: "https://www.mediamarkt.es/es/search.html?query=" }
+                        { nombre: "MediaMarkt", factor: 0.97, urlBase: "https://www.mediamarkt.es/es/search.html?query=" }
                     ];
 
                     let filasHtml = "";
@@ -249,7 +272,6 @@
                         const claseColor = diferencia > 0 ? "diff-plus" : "diff-minus";
                         const signo = diferencia > 0 ? "+" : "";
                         
-                        // Enlace dinámico de compra para las tiendas competidoras
                         const linkTienda = `${t.urlBase}${encodeURIComponent(nombreProducto)}`;
 
                         filasHtml += `
@@ -266,9 +288,9 @@
                     card.innerHTML = `
                         <div class="product-info">
                             <h2 class="product-title">📦 ${nombreProducto}</h2>
-                            <p style="font-size: 13px; color: #565959; margin-bottom: 15px;">Índice global verificado de compras en internet.</p>
+                            <p style="font-size: 13px; color: #565959; margin-bottom: 15px;">Índice global de precios ajustado automáticamente.</p>
                             <span class="amazon-price">${euros}<cents>'${centimos}</cents>€</span>
-                            <a href="${linkAmazon}" target="_blank" class="buy-btn">Ver y comprar en Amazon</a>
+                            <a href="${linkAmazon}" target="_blank" class="buy-btn">Ver en Amazon</a>
                         </div>
                         <div>
                             <table class="compare-table">
