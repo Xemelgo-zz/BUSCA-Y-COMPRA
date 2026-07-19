@@ -2,155 +2,173 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Control de Accesos y Seguridad</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GeoCompare Pro</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --accent-cyan: #38bdf8;
-            --accent-red: #ef4444;
-            --accent-green: #22c55e;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #10b981;
+            --amazon: #ff9900;
+            --aliexpress: #ff4747;
+            --text: #f8fafc;
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
+            margin: 0; padding: 16px;
+            background-color: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding-bottom: 40px;
         }
 
-        .container { width: 100%; max-width: 800px; }
-        h1 { color: var(--accent-cyan); text-align: center; font-size: 24px; }
-        p { color: #94a3b8; text-align: center; margin-top: 0; }
+        h1 { font-size: 22px; text-align: center; color: var(--accent); margin-bottom: 5px; }
+        .sub { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
 
-        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
-        @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
-
-        .card { background: var(--bg-card); border: 1px solid #334155; border-radius: 12px; padding: 20px; }
-        .card h2 { font-size: 16px; margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-
-        .btn {
-            background: #334155; color: white; border: none; padding: 10px 16px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px;
-            transition: background 0.2s;
+        /* BUSCADOR */
+        .box-busqueda {
+            background: var(--card); border: 1px solid #334155;
+            border-radius: 25px; padding: 6px 6px 6px 16px; display: flex; align-items: center;
+            margin-bottom: 20px;
         }
-        .btn-green { background: var(--accent-green); }
-        .btn-red { background: var(--accent-red); }
-        .btn:hover { opacity: 0.9; }
-
-        .status-box {
-            background: #0f172a; border-radius: 6px; padding: 12px;
-            font-family: monospace; font-size: 13px; min-height: 40px; margin-top: 10px;
-            word-break: break-all; border-left: 4px solid #64748b;
+        .box-busqueda input {
+            flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none;
         }
-        .error { border-left-color: var(--accent-red); color: #fca5a5; }
-        .success { border-left-color: var(--accent-green); color: #86efac; }
+        .box-busqueda button {
+            background: var(--accent); border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; font-size: 16px;
+        }
+
+        /* CONTENEDOR DE RESULTADOS */
+        .resultado-container { display: none; animation: fadeIn 0.3s ease; }
         
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: #475569; }
-        .badge-user { background: #0284c7; }
-        .badge-admin { background: #7c3aed; }
+        .producto-titulo {
+            font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;
+            background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;
+        }
+
+        /* TARJETAS DE COMPARACIÓN */
+        .tarjeta {
+            background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 12px;
+            border-left: 5px solid #64748b; display: flex; justify-content: space-between; align-items: center;
+        }
+        .tarjeta.local { border-left-color: var(--accent); }
+        .tarjeta.amz { border-left-color: var(--amazon); }
+        .tarjeta.ali { border-left-color: var(--aliexpress); }
+
+        .info h3 { margin: 0 0 4px 0; font-size: 15px; }
+        .info p { margin: 0; font-size: 12px; color: #94a3b8; }
+        
+        .precio-badge {
+            text-align: right;
+        }
+        .precio { font-size: 18px; font-weight: bold; color: #fff; display: block; }
+        .tiempo { font-size: 11px; color: #cbd5e1; display: block; margin-top: 2px; }
+
+        .btn-ir {
+            background: rgba(255,255,255,0.1); border: none; padding: 6px 12px; 
+            border-radius: 6px; color: white; font-size: 11px; font-weight: bold;
+            cursor: pointer; margin-top: 5px; display: inline-block; text-decoration: none;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🛡️ Simulador de Autenticación Criptográfica</h1>
-    <p>Prueba cómo el servidor valida firmas y deniega manipulaciones de roles.</p>
+    <h1>📍 GeoCompare Smart</h1>
+    <div class="sub">Busca un producto para comparar stock local vs online</div>
 
-    <div class="grid">
-        <!-- SECCIÓN 1: INICIO DE SESIÓN SIMULADO -->
-        <div class="card">
-            <h2>1. Autenticación en el Servidor</h2>
-            <p style="text-align:left; font-size:13px;">Elige con qué identidad deseas simular el inicio de sesión legítimo:</p>
-            
-            <button class="btn" onclick="login('usr_9482')">Entrar como Carlos <span class="badge badge-user">Usuario</span></button>
-            <button class="btn" onclick="login('usr_1102')">Entrar como Ana <span class="badge badge-admin">Admin</span></button>
-            
-            <div style="margin-top: 15px;"><strong>Token JWT en memoria:</strong></div>
-            <div id="tokenDisplay" class="status-box">Ninguno (No autenticado)</div>
+    <!-- BUSCADOR -->
+    <div class="box-busqueda">
+        <input type="text" id="inputProducto" placeholder="Ej: Cargador iPhone, Auriculares, Cafe...">
+        <button onclick="buscarYComparar()">🔍</button>
+    </div>
+
+    <!-- PANTALLA DE RESULTADOS -->
+    <div id="pantallaResultados" class="resultado-container">
+        <div class="producto-titulo" id="txtProductoBuscado">Resultado de búsqueda</div>
+
+        <!-- OPCIÓN 1: LO MÁS CERCA (TIENDA FÍSICA) -->
+        <div class="tarjeta local">
+            <div class="info">
+                <h3>🏬 Tienda Local Más Cercana</h3>
+                <p id="localNombre">Cargando comercio...</p>
+                <a href="#" id="linkMapa" class="btn-ir">📍 Ver Ruta GPS</a>
+            </div>
+            <div class="precio-badge">
+                <span class="precio" id="localPrecio">0.00€</span>
+                <span class="tiempo" style="color: #4ade80;">⚡ ¡Ya mismo! (10 min)</span>
+            </div>
         </div>
 
-        <!-- SECCIÓN 2: CONTROL DE ACCESOS -->
-        <div class="card">
-            <h2>2. Peticiones al Panel de Administración</h2>
-            <p style="text-align:left; font-size:13px;">Intenta consultar los datos restringidos del servidor con el token actual:</p>
-            
-            <button class="btn btn-green" onclick="enviarPeticion(false)">Enviar Petición Normal</button>
-            <button class="btn btn-red" onclick="enviarPeticion(true)">Simular Ataque (Modificar Token)</button>
+        <!-- OPCIÓN 2: AMAZON -->
+        <div class="tarjeta amz">
+            <div class="info">
+                <h3>📦 Amazon Prime</h3>
+                <p>Envío gestionado por red logística</p>
+                <a href="#" id="linkAmazon" target="_blank" class="btn-ir">🌐 Ver en Amazon</a>
+            </div>
+            <div class="precio-badge">
+                <span class="precio" id="amazonPrecio">0.00€</span>
+                <span class="tiempo" id="amazonTiempo">Mañana</span>
+            </div>
+        </div>
 
-            <div style="margin-top: 15px;"><strong>Respuesta del Servidor:</strong></div>
-            <div id="respuestaDisplay" class="status-box">Esperando acción...</div>
+        <!-- OPCIÓN 3: ALIEXPRESS -->
+        <div class="tarjeta ali">
+            <div class="info">
+                <h3>🛩️ AliExpress Plaza / Global</h3>
+                <p>Envío directo desde almacén</p>
+                <a href="#" id="linkAli" target="_blank" class="btn-ir">🌐 Ver en AliExpress</a>
+            </div>
+            <div class="precio-badge">
+                <span class="precio" id="aliPrecio">0.00€</span>
+                <span class="tiempo" id="aliTiempo">7-12 días</span>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Variables locales que simulan el almacenamiento en el navegador (sessionStorage)
-    let tokenActual = null;
-    let datosUsuarioSimulados = null;
+    <script>
+        function buscarYComparar() {
+            const producto = document.getElementById('inputProducto').value.trim();
+            if (!producto) return;
 
-    // Simulación del Endpoint de Login
-    function login(id) {
-        const respuestaDiv = document.getElementById('respuestaDisplay');
-        respuestaDiv.className = "status-box";
-        respuestaDiv.innerText = "Esperando acción...";
+            // Mostramos la interfaz de resultados
+            document.getElementById('pantallaResultados').style.display = 'block';
+            document.getElementById('txtProductoBuscado').innerText = `🛒 Análisis para: "${producto}"`;
 
-        // Datos que el servidor conoce y firmaría
-        if (id === 'usr_9482') {
-            datosUsuarioSimulados = { id: "usr_9482", nombre: "Carlos Gómez", rol: "USUARIO_ESTÁNDAR" };
-            // Simulamos un Token JWT firmado (En un entorno real, la firma es ilegible e imodificable)
-            tokenActual = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl85NDgyIiwicm9sIjoiVVNVQVJJT19FU1TBUkRBUiJ9.FIRMA_VALIDA_CARLOS";
-        } else if (id === 'usr_1102') {
-            datosUsuarioSimulados = { id: "usr_1102", nombre: "Ana Martínez", rol: "ADMIN_SISTEMA" };
-            tokenActual = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl8xMTAyIiwicm9sIjoiQURNSU5fU0lTVEVNQSJ9.FIRMA_VALIDA_ANA";
+            // Generador de precios aleatorios lógicos para la simulación
+            // En un futuro, aquí conectarías las APIs de precios
+            const basePrecio = Math.floor(Math.random() * 30) + 10; 
+
+            const pLocal = (basePrecio * 1.2).toFixed(2); // Local suele ser un pelín más caro por inmediatez
+            const pAmazon = (basePrecio * 0.95).toFixed(2);
+            const pAliExpress = (basePrecio * 0.6).toFixed(2); // AliExpress el más barato pero tarda más
+
+            // Actualizamos los precios en la pantalla
+            document.getElementById('localPrecio').innerText = `${pLocal} €`;
+            document.getElementById('amazonPrecio').innerText = `${pAmazon} €`;
+            document.getElementById('aliPrecio').innerText = `${pAliExpress} €`;
+
+            // Configurar los enlaces de los botones online
+            document.getElementById('linkAmazon').href = `https://www.amazon.es/s?k=${encodeURIComponent(producto)}`;
+            document.getElementById('linkAli').href = `https://.aliexpress.com/wholesale?SearchText=${encodeURIComponent(producto)}`;
+
+            // LÓGICA DE GEOLOCALIZACIÓN PARA LA TIENDA CERCANA
+            // Configuramos el botón de mapa para que te busque el comercio que vende eso a tu alrededor en tu app de mapas nativa
+            const esApple = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Asignamos nombres genéricos de comercios cercanos según lo que busques
+            let comercioEstimado = "Bazar / Supermercado cercano";
+            if(producto.toLowerCase().includes("cafe") || producto.toLowerCase().includes("comida")) comercioEstimado = "Supermercado / Alimentación";
+            if(producto.toLowerCase().includes("cargador") || producto.toLowerCase().includes("cable")) comercioEstimado = "Bazar Electrónico Cercano";
+            
+            document.getElementById('localNombre').innerText = `${comercioEstimado} (Calculando por GPS...)`;
+
+            // Enlace directo al GPS del móvil buscando el producto abierto ya
+            document.getElementById('linkMapa').href = esApple 
+                ? `maps://?q=${encodeURIComponent(producto + " abierto ahora")}` 
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(producto + " abierto ahora")}`;
         }
-
-        const tokenDiv = document.getElementById('tokenDisplay');
-        tokenDiv.className = "status-box success";
-        tokenDiv.innerText = tokenActual;
-    }
-
-    // Simulación de la capa de verificación del servidor
-    function enviarPeticion(intentarModificarRol) {
-        const respuestaDiv = document.getElementById('respuestaDisplay');
-        
-        if (!tokenActual) {
-            respuestaDiv.className = "status-box error";
-            respuestaDiv.innerText = "Error 403: Acceso Denegado. No tienes ningún token. Primero inicia sesión.";
-            return;
-        }
-
-        let tokenAEnviar = tokenActual;
-
-        // ACCIÓN DE ATAQUE SIMULADA: El usuario altera el contenido del token localmente antes de enviarlo
-        if (intentarModificarRol) {
-            // El usuario cambia maliciosamente la parte del texto que dice "USUARIO_ESTÁNDAR" por "ADMIN_SISTEMA"
-            tokenAEnviar = tokenActual.replace("VVNVQVJJT19FU1TBUkRBUiJ9", "QURNSU5fU0lTVEVNQSJ9");
-        }
-
-        // --- EL SERVIDOR RECIBE LA PETICIÓN Y EJECUTA LA VALIDACIÓN ---
-        
-        // Paso 1: El servidor comprueba si el token ha sido alterado comparándolo con su clave secreta
-        if (intentarModificarRol) {
-            // Como el texto cambió, la firma criptográfica original ya no coincide con el contenido
-            respuestaDiv.className = "status-box error";
-            respuestaDiv.innerText = "Error 401 (Unauthorized): ¡Alerta de Seguridad! La firma digital del Token no coincide. El token ha sido manipulado y la petición ha sido bloqueada.";
-            return;
-        }
-
-        // Paso 2: Si la firma es legítima, el servidor lee los datos internos del token
-        if (datosUsuarioSimulados.rol === "ADMIN_SISTEMA") {
-            respuestaDiv.className = "status-box success";
-            respuestaDiv.innerText = "Acceso Autorizado 200 (OK):\nBienvenida Ana. Cargando panel de control principal... [Acceso Concedido]";
-        } else {
-            respuestaDiv.className = "status-box error";
-            respuestaDiv.innerText = "Error 403 (Forbidden):\nTu firma es auténtica (eres Carlos), pero el servidor confirma que tu rol de 'USUARIO_ESTÁNDAR' no tiene permisos para ver este panel.";
-        }
-    }
-</script>
-
+    </script>
 </body>
 </html>
