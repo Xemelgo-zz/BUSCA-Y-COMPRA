@@ -3,114 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador sin Límites</title>
+    <title>Buscador Universal sin Límites</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #24292e;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #2ea44f;
-        }
-        .results {
-            list-style: none;
+        * {
+            box-sizing: border-box;
+            margin: 0;
             padding: 0;
         }
-        .results li {
-            padding: 10px;
-            background: white;
-            margin-bottom: 5px;
-            border-radius: 4px;
-            border-left: 4px solid #2ea44f;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f6f8fa;
+            color: #24292e;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
         }
-        .no-results {
-            color: #666;
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2328;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #636c76;
+        }
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: inset 0 1px 0 rgba(20,23,26,0.02);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9,105,218,0.3);
+        }
+        .results-list {
+            list-style: none;
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .result-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid #d0d7de;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-item:hover {
+            background-color: #f6f8fa;
+        }
+        .result-icon {
+            color: #57606a;
+        }
+        .status-message {
+            padding: 16px;
+            text-align: center;
+            color: #57606a;
+            font-size: 14px;
             font-style: italic;
         }
     </style>
 </head>
 <body>
 
-    <h2>🔍 Buscador Global de Productos</h2>
-    <p>Busca cualquier cosa en la base de datos sin restricciones de indexación:</p>
-
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Escribe tu búsqueda aquí...">
-        <button onclick="buscar()">Buscar</button>
+<div class="container">
+    <div class="header">
+        <h1>🔍 Buscador Universal</h1>
+        <p>Introduce cualquier término. Búsqueda instantánea sin límites.</p>
     </div>
 
-    <ul id="resultsList" class="results"></ul>
+    <div class="search-box">
+        <input type="text" id="query" class="search-input" placeholder="Buscar cualquier cosa..." autocomplete="off">
+    </div>
 
-    <script>
-        // Tu lista de productos/artículos directamente en el código
-        const baseDeDatos = [
-            "Laptop Gamer ASUS Rog",
-            "Monitor Curvo 27 pulgadas",
-            "Cafetera Espresso Delonghi",
-            "Curso Completo de Python 2026",
-            "Teclado Mecánico RGB",
-            "Zapatillas de Running Nike",
-            "Café en grano Premium",
-            "iPhone 15 Pro Max",
-            "Auriculares Inalámbricos Sony"
-        ];
+    <ul id="results" class="results-list"></ul>
+</div>
 
-        function buscar() {
-            const termino = document.getElementById("searchInput").value.trim().toLowerCase();
-            const listaHTML = document.getElementById("resultsList");
-            
-            // Limpiamos pantalla anterior
-            listaHTML.innerHTML = "";
+<script>
+    // Tu lista de productos editables
+    const baseDatos = [
+        "Laptop Gamer ASUS Rog STRIX",
+        "Monitor Curvo 27 pulgadas Samsung",
+        "Cafetera Espresso Delonghi Dedica",
+        "Curso Completo de Python 2026",
+        "Teclado Mecánico RGB Logitech",
+        "Zapatillas de Running Nike Air Max",
+        "Café en grano Premium Arábica",
+        "iPhone 15 Pro Max 256GB",
+        "Auriculares Inalámbricos Sony WH-1000XM4",
+        "Camiseta Oficial Selección Española",
+        "Smart TV 55 Pulgadas LG OLED",
+        "Ratón Ergonómico Inalámbrico MX Master",
+        "Mochila Impermeable antirrobo para viajes"
+    ];
 
-            if (termino === "") {
-                listaHTML.innerHTML = "<li class='no-results'>⚠️ Por favor, escribe algo para buscar.</li>";
-                return;
-            }
+    const input = document.getElementById('query');
+    const resultsContainer = document.getElementById('results');
 
-            // Filtramos la lista sin importar mayúsculas/minúsculas
-            const filtrados = baseDeDatos.filter(item => item.toLowerCase().includes(termino));
-
-            // Mostramos los resultados en la web
-            if (filtrados.length > 0) {
-                filtrados.forEach(producto => {
-                    const li = document.createElement("li");
-                    li.textContent = producto;
-                    listaHTML.appendChild(li);
-                });
-            } else {
-                listaHTML.innerHTML = `<li class='no-results'>❌ No se encontró nada para "${document.getElementById("searchInput").value}".</li>`;
-            }
+    input.addEventListener('input', () => {
+        const valor = input.value.trim().toLowerCase();
+        
+        if (valor === "") {
+            resultsContainer.style.display = "none";
+            resultsContainer.innerHTML = "";
+            return;
         }
 
-        // Permite buscar también al presionar la tecla "Enter"
-        document.getElementById("searchInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                buscar();
-            }
-        });
-    </script>
+        // Busca coincidencias en tiempo real
+        const filtrados = baseDatos.filter(item => item.toLowerCase().includes(valor));
+
+        resultsContainer.style.display = "block";
+        resultsContainer.innerHTML = "";
+
+        if (filtrados.length > 0) {
+            filtrados.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'result-item';
+                li.innerHTML = `<span class="result-icon">📦</span> <span>${item}</span>`;
+                resultsContainer.appendChild(li);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.className = 'status-message';
+            li.textContent = `❌ Sin coincidencias para "${input.value}".`;
+            resultsContainer.appendChild(li);
+        }
+    });
+</script>
+
 </body>
 </html>
