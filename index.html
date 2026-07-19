@@ -1,64 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Comercios Cercanos</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --error: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    
+    header { text-align: center; margin-bottom: 30px; padding: 20px 0; }
+    h1 { font-size: 2rem; color: #0f172a; margin-bottom: 8px; }
+    
+    .section-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; color: #334155; }
+    
+    .flex-group { display: flex; gap: 10px; margin-bottom: 12px; }
+    input[type="text"] { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
+    input[type="text"]:focus { border-color: var(--primary); }
+    
+    button { padding: 10px 18px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    button.btn-primary { background: var(--primary); color: white; }
+    button.btn-primary:hover { background: var(--primary-hover); }
+    button.btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; }
+    button.btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid var(--border); }
+    button.btn-secondary:hover { background: #e2e8f0; }
+    
+    .status-line { font-size: 0.95rem; color: var(--text-muted); margin-top: 8px; }
+    .status-line.ok { color: var(--success); font-weight: 500; }
+    .status-line.err { color: var(--error); }
+    .status-line.loading { color: var(--primary); font-weight: 500; }
+    
+    .results-bar { display: none; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+    .sort-toggle button { font-size: 0.85rem; padding: 6px 12px; border-radius: 6px; margin-left: 5px; }
+    .sort-toggle button.active { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+    
+    .results-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+    @media(min-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
+    
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; }
+    .card .cat { font-size: 0.75rem; text-transform: uppercase; tracking: 0.05em; color: var(--primary); font-weight: 700; margin-bottom: 4px; }
+    .card .pname { font-size: 1.1rem; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
+    .card .addr { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+    .card hr { border: 0; border-top: 1px solid var(--border); margin: 12px 0; }
+    
+    .meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+    .dist { display: flex; align-items: center; gap: 4px; font-weight: 600; color: #475569; }
+    .dist svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
+    .maplink { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .maplink:hover { text-decoration: underline; }
+    
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 1rem; }
+    .empty-state svg { display: block; margin-bottom: 10px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Buscador de Comercios Reales</h1>
+    <p style="color: var(--text-muted);">Encuentra establecimientos a tu alrededor usando OpenStreetMap</p>
+  </header>
+
+  <!-- PASO 1: UBICACIÓN -->
+  <div class="section-box">
+    <div class="section-title">1. Tu Ubicación</div>
+    <div style="margin-bottom: 15px;">
+      <button type="button" id="heroLocate" class="btn-secondary" style="width: 100%; padding: 12px;">
+        📍 Usar mi ubicación GPS actual
+      </button>
+    </div>
+    
+    <form id="addrForm">
+      <div class="flex-group">
+        <input type="text" id="addrInput" placeholder="O escribe tu dirección (Ej: Gran Via 1, Madrid)" required>
+        <button type="submit" class="btn-secondary">Fijar</button>
+      </div>
+    </form>
+    
+    <div id="geoStatus" class="status-line">Ubicación no establecida. Activa el GPS o introduce una dirección para empezar.</div>
+  </div>
+
+  <!-- PASO 2: BÚSQUEDA LIBRE -->
+  <div class="section-box">
+    <div class="section-title">2. ¿Qué estás buscando?</div>
+    <form id="searchForm">
+      <div class="flex-group">
+        <input type="text" id="searchInput" placeholder="Ej: Mercadona, leche, sartén, farmacia, ropa..." required>
+        <button type="submit" id="searchBtn" class="btn-primary" disabled>Buscar</button>
+      </div>
+    </form>
+    <div id="radarHint" class="status-line" style="font-size: 0.85rem;">Debes fijar tu ubicación en el paso 1 antes de poder buscar.</div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="results-bar" id="resultsBar">
+    <span id="resultsCount" style="font-size: 0.95rem; color: #334155;"></span>
+    <div class="sort-toggle">
+      <button type="button" id="sortDist" class="btn-secondary active" data-sort="distance">Cercanía</button>
+      <button type="button" id="sortName" class="btn-secondary" data-sort="name">Nombre</button>
+    </div>
+  </div>
+
+  <div id="resultsArea"></div>
+</div>
+
 <script>
 (function(){
   "use strict";
 
-  const nav = document.getElementById('siteNav');
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 12));
-
-  /* ================= UBICACIÓN REAL ================= */
   let userCoords = null; 
   const geoStatusEl = document.getElementById('geoStatus');
   const searchBtn = document.getElementById('searchBtn');
+  const radarHint = document.getElementById('radarHint');
 
+  // Guardar ubicación seleccionada
   function setLocation(lat, lon, label){
     userCoords = { lat, lon };
     geoStatusEl.textContent = label;
     geoStatusEl.classList.add('ok');
     geoStatusEl.classList.remove('err');
-    document.getElementById('radarHint').style.display = 'none';
+    if(radarHint) radarHint.style.display = 'none';
     searchBtn.disabled = false;
   }
 
+  // Evento: Localización por GPS
   document.getElementById('heroLocate').addEventListener('click', () => {
     if (!navigator.geolocation){
-      geoStatusEl.textContent = "Tu navegador no admite geolocalización. Prueba a escribir tu dirección.";
+      geoStatusEl.textContent = "Tu navegador no admite geolocalización. Escribe tu dirección manualmente.";
       geoStatusEl.classList.add('err');
       return;
     }
-    geoStatusEl.textContent = "Localizando…";
+    geoStatusEl.textContent = "Localizando vía GPS…";
     geoStatusEl.classList.remove('err','ok');
     navigator.geolocation.getCurrentPosition(
-      pos => setLocation(pos.coords.latitude, pos.coords.longitude, "Ubicación GPS activada · " + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4)),
+      pos => {
+        setLocation(
+          pos.coords.latitude, 
+          pos.coords.longitude, 
+          "Ubicación GPS activada · (" + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4) + ")"
+        );
+      },
       () => {
-        geoStatusEl.textContent = "No se pudo acceder al GPS. Prueba a escribir tu dirección abajo.";
+        geoStatusEl.textContent = "No se pudo acceder al GPS. Por favor, escribe tu dirección en el cuadro inferior.";
         geoStatusEl.classList.add('err');
       },
-      { enableHighAccuracy:true, timeout:8000 }
+      { enableHighAccuracy: true, timeout: 8000 }
     );
   });
 
+  // Evento: Localización por Dirección (Nominatim)
   document.getElementById('addrForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const q = document.getElementById('addrInput').value.trim();
     if (!q) return;
-    geoStatusEl.textContent = "Buscando esa dirección…";
+    geoStatusEl.textContent = "Buscando coordenadas de la dirección…";
     geoStatusEl.classList.remove('err','ok');
     try{
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`);
       const data = await res.json();
       if (!data.length){
-        geoStatusEl.textContent = "No encontramos esa dirección. Prueba a ser más concreto (ciudad + calle).";
+        geoStatusEl.textContent = "No se encontró esa dirección. Intenta añadir la ciudad o código postal.";
         geoStatusEl.classList.add('err');
         return;
       }
-      setLocation(parseFloat(data[0].lat), parseFloat(data[0].lon), "Ubicación fijada · " + (data[0].display_name.split(',').slice(0,2).join(',')));
+      setLocation(
+        parseFloat(data[0].lat), 
+        parseFloat(data[0].lon), 
+        "Ubicación fijada · " + (data[0].display_name.split(',').slice(0,2).join(','))
+      );
     }catch(err){
-      geoStatusEl.textContent = "Error al buscar la dirección. Inténtalo de nuevo.";
+      geoStatusEl.textContent = "Error de conexión al buscar la dirección.";
       geoStatusEl.classList.add('err');
     }
   });
 
-  /* ================= GEOMETRÍA REAL ================= */
+  // Cálculo de distancia física (Haversine)
   function haversineKm(lat1, lon1, lat2, lon2){
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI/180;
@@ -66,65 +194,72 @@
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
-  function normalize(str){ return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 
-  /* ================= MAPA PRODUCTO → CATEGORÍA OSM ================= */
+  // Quitar acentos y dejar en minúsculas
+  function normalizeStr(str){ 
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
+  }
+
+  /* ================= MAPEO INTELIGENTE DE PALABRAS CLAVE ================= */
   const CATEGORY_MAP = [
-    { label:'Electrónica', keywords:['auricular','auriculares','cascos','altavoz','altavoces','cargador','movil','móvil','telefono','teléfono','portatil','portátil','ordenador','tablet','television','televisor','electronica','electrónica'], tags:[['shop','electronics'],['shop','mobile_phone'],['shop','computer']] },
-    { label:'Bricolaje', keywords:['taladro','tornillo','tornillos','martillo','pintura','bricolaje','herramienta','herramientas'], tags:[['shop','doityourself'],['shop','hardware']] },
-    { label:'Alimentación', keywords:['arroz','aceite','cafe','café','leche','pan','comida','alimentacion','alimentación','supermercado','pasta','conserva','fruta','verdura'], tags:[['shop','supermarket'],['shop','convenience'],['shop','grocery'],['shop','bakery'],['shop','greengrocer']] },
-    { label:'Mascotas', keywords:['pienso','mascota','mascotas','gato','perro','collar'], tags:[['shop','pet']] },
-    { label:'Bebé', keywords:['pañal','panal','bebe','bebé','biberon','biberón'], tags:[['shop','baby_goods']] },
-    { label:'Deporte', keywords:['zapatilla','zapatillas','balon','balón','running','deporte','bicicleta'], tags:[['shop','sports'],['shop','bicycle']] },
-    { label:'Hogar', keywords:['sarten','sartén','termo','cafetera','bombilla','hogar','vajilla','menaje','muebles'], tags:[['shop','houseware'],['shop','department_store'],['shop','furniture']] },
-    { label:'Ropa', keywords:['ropa','camiseta','pantalon','pantalón','zapato','zapatos','moda'], tags:[['shop','clothes'],['shop','shoes']] },
-    { label:'Librería', keywords:['libro','libros','libreria','librería','papeleria','papelería'], tags:[['shop','books'],['shop','stationery']] },
-    { label:'Farmacia', keywords:['farmacia','medicamento','medicina'], tags:[['amenity','pharmacy']] },
+    { label:'Alimentación', keywords:['arroz','aceite','cafe','café','leche','pan','comida','alimentacion','alimentación','supermercado','pasta','conserva','fruta','verdura','queso','carne'], tags:[['shop','supermarket'],['shop','convenience'],['shop','grocery'],['shop','bakery'],['shop_greengrocer']] },
+    { label:'Hogar y Cocina', keywords:['sarten','sartén','termo','cafetera','bombilla','hogar','vajilla','menaje','muebles','plato','vaso'], tags:[['shop','houseware'],['shop','department_store'],['shop','furniture']] },
+    { label:'Electrónica', keywords:['auricular','auriculares','cascos','altavoz','cargador','movil','móvil','telefono','portatil','ordenador','tablet','tele','television'], tags:[['shop','electronics'],['shop','mobile_phone'],['shop','computer']] },
+    { label:'Bricolaje', keywords:['taladro','tornillo','tornillos','martillo','pintura','bricolaje','herramienta','herramientas','clavo'], tags:[['shop','doityourself'],['shop','hardware']] },
+    { label:'Farmacia', keywords:['farmacia','medicamento','medicina','pastillas','jarabe'], tags:[['amenity','pharmacy']] },
+    { label:'Ropa y Moda', keywords:['ropa','camiseta','pantalon','pantalón','zapato','zapatos','moda','chaqueta','vestido'], tags:[['shop','clothes'],['shop','shoes']] },
+    { label:'Librería y Papelería', keywords:['libro','libros','libreria','librería','papeleria','papelería','bolígrafo','cuaderno'], tags:[['shop','books'],['shop','stationery']] },
+    { label:'Mascotas', keywords:['pienso','mascota','mascotas','gato','perro','collar','pájaro'], tags:[['shop','pet']] }
   ];
 
   function matchCategory(query){
-    const q = normalize(query);
+    const q = normalizeStr(query);
     for (const cat of CATEGORY_MAP){
-      if (cat.keywords.some(k => q.includes(normalize(k)))) return cat;
+      if (cat.keywords.some(k => q.includes(normalizeStr(k)))) return cat;
     }
     return null;
   }
 
-  /* ================= OVERPASS (OpenStreetMap) — BÚSQUEDA LIBRE TOTAL ================= */
-  const OVERPASS_ENDPOINTS = [
-    'https://overpass-api.de/api/interpreter',
-    'https://overpass.kumi.systems/api/interpreter'
-  ];
-  const RADIUS_M = 6000;
+  /* ================= CONSTRUCTOR DE CONSULTA OVERPASS LIBRE ================= */
+  const RADIUS_M = 6000; // Radio de búsqueda (6 km)
 
   function buildOverpassQuery(lat, lon, category, freeText) {
     const parts = [];
     
-    // 1. Si coincide con una categoría mapeada arriba, la priorizamos
-    if (category) {
-      category.tags.forEach(([k,v]) => parts.push(`node["${k}"="${v}"](around:${RADIUS_M},${lat},${lon});`));
+    // 1. Si detecta una categoría por palabra clave (ej: "leche" -> añade tags de supermercados)
+    if (category && category.tags) {
+      category.tags.forEach(tag => {
+        parts.push(`node["${tag[0]}"="${tag[1]}"](around:${RADIUS_M},${lat},${lon});`);
+      });
     }
     
-    // 2. Si no es categoría o es texto libre, buscamos el término en múltiples propiedades de OSM
-    const esc = freeText.replace(/["\\]/g,'').trim();
-    if (esc) {
-      // Busca si el término coincide parcial o totalmente con el NOMBRE de la tienda
-      parts.push(`node["shop"]["name"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
-      parts.push(`node["amenity"]["name"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
-      
-      // BÚSQUEDA MEJORADA: Busca si el término coincide con el TIPO de tienda (ej: "supermarket", "bakery", "clothes")
-      parts.push(`node["shop"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
-      parts.push(`node["amenity"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
+    // 2. Búsqueda libre total por expresiones regulares sobre nombres y tipos en OSM
+    if (freeText) {
+      const esc = freeText.replace(/["\\]/g,'').trim();
+      if (esc.length > 0) {
+        // Buscar concordancia en el nombre comercial de nodos
+        parts.push(`node["shop"]["name"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
+        parts.push(`node["amenity"]["name"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
+        
+        // Buscar concordancia en el propio valor de la etiqueta de categoría de OSM
+        parts.push(`node["shop"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
+        parts.push(`node["amenity"~"${esc}",i](around:${RADIUS_M},${lat},${lon});`);
+      }
     }
     
-    // 3. Fallback defensivo: Si la caja está vacía o falló el filtro, trae cualquier comercio
+    // 3. Fallback: Si no hay parámetros válidos, trae tiendas genéricas del área
     if (!parts.length) {
       parts.push(`node["shop"](around:${RADIUS_M},${lat},${lon});`);
-      parts.push(`node["amenity"~"pharmacy|restaurant|cafe|fast_food"](around:${RADIUS_M},${lat},${lon});`);
     }
     
     return `[out:json][timeout:25];(${parts.join('')});out body;`;
   }
+
+  // Petición HTTP a Overpass con servidores de respaldo en caso de caída
+  const OVERPASS_ENDPOINTS = [
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter'
+  ];
 
   async function queryOverpass(qlQuery){
     let lastErr;
@@ -135,30 +270,32 @@
         return await res.json();
       }catch(err){ lastErr = err; }
     }
-    throw lastErr || new Error('overpass_unreachable');
+    throw lastErr || new Error('Servidores caídos');
   }
 
-  function shopLabel(tags){
+  function getShopLabel(tags){
     if (tags.shop) return tags.shop.replace(/_/g,' ');
     if (tags.amenity) return tags.amenity.replace(/_/g,' ');
     return 'Comercio';
   }
-  function shopAddress(tags){
+
+  function getShopAddress(tags){
     const parts = [tags['addr:street'], tags['addr:housenumber'], tags['addr:city']].filter(Boolean);
     return parts.length ? parts.join(' ') : null;
   }
 
-  /* ================= BÚSQUEDA Y RENDER ================= */
+  /* ================= CONTROL DE RENDERIZADO Y FILTROS ================= */
   const resultsArea = document.getElementById('resultsArea');
   const resultsBar = document.getElementById('resultsBar');
   const resultsCount = document.getElementById('resultsCount');
   const sortButtons = document.querySelectorAll('.sort-toggle button');
+  
   let currentShops = [];
   let currentSort = 'distance';
 
   function showStatus(html, cls){
     resultsBar.style.display = 'none';
-    resultsArea.innerHTML = `<div class="status-line ${cls||''}">${html}</div>`;
+    resultsArea.innerHTML = `<div class="status-line ${cls || ''}">${html}</div>`;
   }
 
   function renderShops(){
@@ -169,67 +306,80 @@
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto;">
             <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          No hay comercios que coincidan con tu búsqueda en OpenStreetMap dentro de ${(RADIUS_M/1000)} km.
+          No encontramos ningún comercio cercano que coincida con ese término en un radio de 6 km.
         </div>`;
       return;
     }
-    const sorted = [...currentShops].sort((a,b) =>
-      currentSort === 'distance' ? a.distance - b.distance : a.name.localeCompare(b.name)
-    );
+
+    // Ordenar resultados según la selección del usuario
+    const sorted = [...currentShops].sort((a,b) => {
+      return currentSort === 'distance' ? a.distance - b.distance : a.name.localeCompare(b.name);
+    });
+
     resultsBar.style.display = 'flex';
-    resultsCount.innerHTML = `<strong>${sorted.length}</strong> comercios reales encontrados`;
+    resultsCount.innerHTML = `Hemos encontrado <strong>${sorted.length}</strong> comercios reales`;
+    
     resultsArea.innerHTML = `<div class="results-grid">${sorted.map(s => `
       <div class="card">
-        <div class="cat">${s.category}</div>
-        <div class="pname">${s.name}</div>
-        ${s.address ? `<div class="addr">${s.address}</div>` : ''}
-        <hr>
-        <div class="meta-row">
-          <span class="dist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            ${s.distance.toFixed(1)} km
-          </span>
-          <a class="maplink" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lon}#map=18/${s.lat}/${s.lon}">Ver en el mapa →</a>
+        <div>
+          <div class="cat">${s.category}</div>
+          <div class="pname">${s.name}</div>
+          ${s.address ? `<div class="addr">${s.address}</div>` : '<div class="addr" style="font-style:italic;">Dirección no registrada en mapa</div>'}
+        </div>
+        <div>
+          <hr>
+          <div class="meta-row">
+            <span class="dist">
+              <svg viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              A ${s.distance.toFixed(2)} km
+            </span>
+            <a class="maplink" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lon}#map=17/${s.lat}/${s.lon}">Ver Mapa →</a>
+          </div>
         </div>
       </div>`).join('')}</div>`;
   }
 
+  // Acción: Enviar formulario de búsqueda
   document.getElementById('searchForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const q = document.getElementById('searchInput').value.trim();
     if (!q) return;
+    
     if (!userCoords){
-      showStatus('Primero comparte tu ubicación (GPS o dirección) arriba.', 'err');
+      showStatus('Por favor, establece tu ubicación primero en el paso 1.', 'err');
       return;
     }
-    showStatus('Buscando comercios cercanos…', 'loading');
-    const category = matchCategory(q);
+
+    showStatus('Buscando en la base de datos de OpenStreetMap...', 'loading');
     
-    // Pasamos el string original 'q' al query builder para que analice los tags internos de OSM de forma libre
+    const category = matchCategory(q);
     const ql = buildOverpassQuery(userCoords.lat, userCoords.lon, category, q);
     
     try{
       const data = await queryOverpass(ql);
-      const seen = new Set();
+      const seenIds = new Set();
+      
       currentShops = (data.elements || [])
-        .filter(el => el.tags && el.tags.name && !seen.has(el.id) && seen.add(el.id))
+        .filter(el => el.tags && el.tags.name && !seenIds.has(el.id) && seenIds.add(el.id))
         .map(el => ({
           id: el.id,
           name: el.tags.name,
-          category: category ? category.label : shopLabel(el.tags),
-          address: shopAddress(el.tags),
-          lat: el.lat, lon: el.lon,
+          category: category ? category.label : getShopLabel(el.tags),
+          address: getShopAddress(el.tags),
+          lat: el.lat, 
+          lon: el.lon,
           distance: haversineKm(userCoords.lat, userCoords.lon, el.lat, el.lon)
         }));
+
       renderShops();
-      spawnRadarBlips(currentShops);
     }catch(err){
-      showStatus('No se pudo consultar OpenStreetMap ahora mismo. Espera unos segundos y vuelve a intentarlo.', 'err');
+      showStatus('Error al conectar con OpenStreetMap. Inténtalo de nuevo en unos segundos.', 'err');
     }
   });
 
+  // Alternar ordenación (Cercanía / Nombre)
   sortButtons.forEach(btn => btn.addEventListener('click', () => {
     sortButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -237,24 +387,8 @@
     renderShops();
   }));
 
-  /* ================= RADAR HERO ================= */
-  function spawnRadarBlips(shops){
-    const box = document.getElementById('radarBox');
-    box.querySelectorAll('.radar-blip').forEach(b => b.remove());
-    const sample = [...shops].sort((a,b)=>a.distance-b.distance).slice(0,4);
-    sample.forEach((s, i) => {
-      const el = document.createElement('div');
-      el.className = 'radar-blip';
-      const angle = Math.random()*360;
-      const radius = 20 + Math.random()*32;
-      const x = 50 + radius*Math.cos(angle*Math.PI/180);
-      const y = 50 + radius*Math.sin(angle*Math.PI/180);
-      el.style.left = x + '%'; el.style.top = y + '%';
-      el.style.animationDelay = (i*0.35 + 0.15) + 's';
-      el.innerHTML = `<span class="pip"></span>${s.name} · ${s.distance.toFixed(1)}km`;
-      box.appendChild(el);
-    });
-  }
-
 })();
 </script>
+
+</body>
+</html>
