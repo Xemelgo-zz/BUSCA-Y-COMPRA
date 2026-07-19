@@ -2,105 +2,160 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BuscaCompra S.O.S</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Sincronizador de Sistemas & Código</title>
     <style>
+        :root {
+            --bg-main: #0a0e17;
+            --bg-card: #131a26;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+        }
+
         body {
             margin: 0; padding: 20px;
-            background-color: #090d16; color: #ffffff;
+            background-color: var(--bg-main); color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-align: center;
         }
-        h1 { font-size: 24px; color: #ff5722; margin-bottom: 5px; }
-        p { color: #94a3b8; font-size: 14px; margin-top: 0; margin-bottom: 25px; }
-        
-        /* Contenedor de botones */
-        .grid-botones {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
-        }
-        .tarjeta-btn {
-            background-color: #1e293b; border: 1px solid #334155;
-            border-radius: 16px; padding: 20px 10px; cursor: pointer;
-            transition: transform 0.1s, background-color 0.2s;
-        }
-        .tarjeta-btn:active { transform: scale(0.95); background-color: #334155; }
-        .emoji { font-size: 36px; display: block; margin-bottom: 10px; }
-        .texto { font-size: 15px; font-weight: bold; display: block; color: #f8fafc; }
-        .subtexto { font-size: 11px; color: #94a3b8; display: block; margin-top: 4px; }
 
-        /* Buscador manual por si acaso */
-        .buscador-caja {
-            margin-top: 30px; background: #1e293b; border: 1px solid #ff5722;
-            border-radius: 25px; padding: 6px 6px 6px 16px; display: flex; align-items: center;
+        h1 { font-size: 24px; color: var(--accent-cyan); text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+
+        .workspace {
+            display: grid; grid-template-columns: 1fr; gap: 20px;
         }
-        .buscador-caja input {
-            flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none;
+
+        @media (min-width: 768px) {
+            .workspace { grid-template-columns: 1fr 1fr; }
         }
-        .buscador-caja button {
-            background: #ff5722; border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; font-size: 16px;
+
+        /* Panel Izquierdo: Entrada de Código */
+        .panel-editor {
+            background: var(--bg-card); border: 1px solid #1e293b; border-radius: 12px; padding: 16px;
         }
+        .panel-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        
+        textarea {
+            width: 100%; height: 280px; background: #070a10; color: #38bdf8;
+            border: 1px solid #1e293b; border-radius: 8px; padding: 12px;
+            font-family: 'Courier New', Courier, monospace; font-size: 14px;
+            resize: none; outline: none; box-sizing: border-box;
+        }
+
+        /* Panel Derecho: Interfaz Sincronizada */
+        .panel-vista {
+            background: var(--bg-card); border: 1px solid #1e293b; border-radius: 12px; padding: 16px;
+            display: flex; flex-direction: column;
+        }
+
+        .arbol-sistema {
+            flex: 1; background: #070a10; border-radius: 8px; padding: 12px;
+            min-height: 280px; box-sizing: border-box;
+        }
+
+        .nodo-bloque {
+            background: rgba(6, 182, 212, 0.1); border-left: 4px solid var(--accent-cyan);
+            padding: 10px; margin-bottom: 8px; border-radius: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .nodo-bloque.funcion { border-left-color: var(--accent-purple); background: rgba(168, 85, 247, 0.1); }
+        .nodo-bloque.bucle { border-left-color: #eab308; background: rgba(234, 179, 8, 0.1); }
+
+        .nodo-meta { font-size: 11px; color: var(--text-muted); float: right; margin-top: 2px; }
+        .nodo-nombre { font-weight: bold; font-size: 14px; color: #fff; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <h1>🏪 BuscaCompra S.O.S</h1>
-    <p>Capa de emergencia automática para madrugada</p>
+    <h1>⚡ Quantum Code Synchronizer</h1>
+    <div class="subtitle">Escribe o modifica código a la izquierda para ver cómo el sistema lo lee y procesa en tiempo real</div>
 
-    <!-- BOTONES DIRECTOS FÁCILES -->
-    <div class="grid-botones">
-        <div class="tarjeta-btn" onclick="abrirMapaInmediato('gasolinera 24 horas')">
-            <span class="emoji">⛽</span>
-            <span class="texto">Gasolineras 24h</span>
-            <span class="subtexto">Hielo, bebida, snacks</span>
+    <div class="workspace">
+        <!-- ENTRADA DE CÓDIGO -->
+        <div class="panel-editor">
+            <div class="panel-title">
+                <span>Editor de Entrada (JS / Pseudo)</span>
+                <span style="color: var(--accent-cyan);">● Sincronizado</span>
+            </div>
+            <textarea id="editorCodigo" oninput="procesarYSincronizar()">function inicializarSistema() {
+    let usuarios = 150;
+    for(let i = 0; i < 10; i++) {
+        ejecutarProceso();
+    }
+}
+
+function verificarConexion() {
+    let estado = "activo";
+}</textarea>
         </div>
 
-        <div class="tarjeta-btn" onclick="abrirMapaInmediato('tienda de conveniencia abierta ahora')">
-            <span class="emoji">🏪</span>
-            <span class="texto">Tiendas 24h</span>
-            <span class="subtexto">Alimentos y básicos</span>
+        <!-- INTERFAZ COMPRENSIVA -->
+        <div class="panel-vista">
+            <div class="panel-title">Estructura del Sistema Entendida</div>
+            <div id="arbolSistema" class="arbol-sistema">
+                <!-- Los componentes analizados se inyectan aquí -->
+            </div>
         </div>
-
-        <div class="tarjeta-btn" onclick="abrirMapaInmediato('farmacia de guardia abierta ahora')">
-            <span class="emoji">💊</span>
-            <span class="texto">Farmacia Guardia</span>
-            <span class="subtexto">Medicamentos urgentes</span>
-        </div>
-
-        <div class="tarjeta-btn" onclick="abrirMapaInmediato('bazar abierto ahora')">
-            <span class="emoji">🔌</span>
-            <span class="texto">Bazar / Chinos</span>
-            <span class="subtexto">Pilas, cargadores, cables</span>
-        </div>
-    </div>
-
-    <!-- BUSCADOR POR SI QUIEREN ALGO MÁS SPECÍFICO -->
-    <div class="buscador-caja">
-        <input type="text" id="inputManual" placeholder="¿Buscas otra cosa? Ej: Mc Donalds">
-        <button onclick="buscarManual()">🔍</button>
     </div>
 
     <script>
-        function abrirMapaInmediato(termino) {
-            // Detectamos si es iOS (iPhone/iPad) o Android/PC
-            const esApple = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            
-            // Si es Apple usamos su protocolo nativo; si es Android/PC usamos la URL universal de Google Maps
-            const url = esApple 
-                ? `maps://?q=${encodeURIComponent(termino)}` 
-                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(termino)}`;
-            
-            window.location.href = url;
-        }
+        function procesarYSincronizar() {
+            const codigo = document.getElementById('editorCodigo').value;
+            const arbol = document.getElementById('arbolSistema');
+            arbol.innerHTML = ''; // Limpiar vista anterior
 
-        function buscarManual() {
-            const consulta = document.getElementById('inputManual').value.trim();
-            if (consulta) {
-                // Le añadimos la coletilla mágica para que el mapa filtre los cerrados
-                abrirMapaInmediato(consulta + " abierto ahora");
+            // Dividimos por líneas para simular el análisis secuencial (Lexer)
+            const lineas = codigo.split('\n');
+
+            lineas.forEach((linea, index) => {
+                const numLinea = index + 1;
+                const textoLimpio = linea.trim();
+
+                // 1. Detectar Funciones
+                if (textoLimpio.startsWith('function ') || textoLimpio.includes('=>')) {
+                    const nombreMatch = textoLimpio.match(/function\s+([a-zA-Z0-9_]+)/);
+                    const nombre = nombreMatch ? nombreMatch[1] + '()' : 'Función Anónima';
+                    
+                    crearNodoVisual('Módulo / Función', nombre, `Línea ${numLinea}`, 'funcion');
+                }
+                
+                // 2. Detectar Bucles / Ciclos repetitivos
+                else if (textoLimpio.startsWith('for') || textoLimpio.startsWith('while')) {
+                    crearNodoVisual('Bucle de Repetición', textoLimpio.split('{')[0], `Línea ${numLinea}`, 'bucle');
+                }
+                
+                // 3. Detectar Declaración de Datos / Variables
+                else if (textoLimpio.startsWith('let ') || textoLimpio.startsWith('const ') || textoLimpio.startsWith('var ')) {
+                    const variable = textoLimpio.replace(';', '');
+                    crearNodoVisual('Asignación de Memoria', variable, `Línea ${numLinea}`, 'variable');
+                }
+            });
+
+            if (arbol.innerHTML === '') {
+                arbol.innerHTML = '<div style="color: var(--text-muted); text-align:center; padding-top:100px; font-size:14px;">Escribe estructuras como funciones, bucles o variables para sincronizar el sistema...</div>';
             }
         }
-    </script>
 
+        function crearNodoVisual(tipo, descripcion, tracking, clase) {
+            const arbol = document.getElementById('arbolSistema');
+            const div = document.createElement('div');
+            div.className = `nodo-bloque ${clase}`;
+            
+            div.innerHTML = `
+                <span class="nodo-meta">${tracking}</span>
+                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;">${tipo}</div>
+                <div class="nodo-nombre">${descripcion}</div>
+            `;
+            arbol.appendChild(div);
+        }
+
+        // Ejecutar análisis inicial al cargar la página
+        window.onload = procesarYSincronizar;
+    </script>
 </body>
 </html>
-
