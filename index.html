@@ -2,326 +2,105 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>⚡ Radar Nocturno Quantum</title>
-    
-    <!-- Meta tags para App Nativa (iOS y Android) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/json;,{%22name%22:%22Radar%22,%22short_name%22:%22Radar%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23030712%22}">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BuscaCompra S.O.S</title>
     <style>
-        :root {
-            --bg-matrix: #030712;
-            --neon-cyan: #06b6d4;
-            --neon-orange: #ff5722;
-            --neon-green: #10b981;
-            --surface-card: #1f2937;
-            --text-glow: 0 0 10px rgba(6, 182, 212, 0.5);
-        }
-
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-
         body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-matrix);
-            color: #f3f4f6;
-            overflow-x: hidden;
-            padding-bottom: 40px;
-        }
-
-        /* FONDO DINÁMICO */
-        .grid-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* HEADER PREMIUM */
-        .radar-header {
-            background: rgba(3, 7, 18, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 24px 16px;
+            margin: 0; padding: 20px;
+            background-color: #090d16; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             text-align: center;
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
-            position: sticky; top: 0; z-index: 100;
         }
-
-        .logo-container {
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-
-        .radar-pulse {
-            width: 12px; height: 12px; background: var(--neon-cyan);
-            border-radius: 50%; box-shadow: var(--text-glow);
-            animation: pulse-ring 1.5s infinite ease-in-out;
-        }
-
-        .brand-title {
-            font-size: 22px; font-weight: 900; text-transform: uppercase;
-            letter-spacing: 1px; color: #fff; text-shadow: var(--text-glow);
-        }
-
-        /* BARRA DE BÚSQUEDA */
-        .search-wrapper {
-            margin: 20px 16px; position: relative;
-        }
-        .search-input {
-            width: 100%; background: rgba(31, 41, 55, 0.7);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 30px;
-            padding: 14px 50px 14px 20px; color: #fff; font-size: 16px;
-            outline: none; transition: all 0.3s ease;
-        }
-        .search-input:focus {
-            border-color: var(--neon-cyan); box-shadow: var(--text-glow);
-        }
-        .search-action-btn {
-            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-            background: var(--neon-cyan); border: none; width: 40px; height: 40px;
-            border-radius: 50%; color: #000; font-weight: bold; cursor: pointer;
-        }
-
-        /* PANEL DE RESULTADOS EN TIEMPO REAL */
-        .results-panel {
-            display: none; margin: 0 16px 20px 16px; background: rgba(31, 41, 55, 0.9);
-            border: 1px solid var(--neon-cyan); border-radius: 16px; padding: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .loader-box { text-align: center; padding: 20px 0; }
-        .spinner-quantum {
-            width: 40px; height: 40px; border: 4px solid rgba(6, 182, 212, 0.1);
-            border-top-color: var(--neon-cyan); border-radius: 50%;
-            margin: 0 auto 12px; animation: spin 1s linear infinite;
-        }
-
-        .node-card {
-            background: rgba(17, 24, 39, 0.8); border-radius: 12px; padding: 16px;
-            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .node-info h4 { margin: 0 0 6px 0; font-size: 16px; color: #fff; }
-        .node-info p { margin: 0; font-size: 12px; color: #9ca3af; }
-        .node-badge {
-            background: rgba(16, 185, 129, 0.1); color: var(--neon-green);
-            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        /* GRID ULTRA INMERSIVO */
-        .grid-title { font-size: 14px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin: 24px 16px 12px 16px; letter-spacing: 1px; }
+        h1 { font-size: 24px; color: #ff5722; margin-bottom: 5px; }
+        p { color: #94a3b8; font-size: 14px; margin-top: 0; margin-bottom: 25px; }
         
-        .macro-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 16px;
+        /* Contenedor de botones */
+        .grid-botones {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
         }
-        .macro-card {
-            background: var(--surface-card); border-radius: 16px; padding: 20px;
-            position: relative; overflow: hidden; cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.03); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .tarjeta-btn {
+            background-color: #1e293b; border: 1px solid #334155;
+            border-radius: 16px; padding: 20px 10px; cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
         }
-        .macro-card:active { transform: scale(0.96); border-color: var(--neon-orange); }
-        .macro-icon { font-size: 36px; display: block; margin-bottom: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
-        .macro-label { font-size: 15px; font-weight: 700; color: #fff; display: block; }
-        .macro-desc { font-size: 11px; color: #9ca3af; margin-top: 4px; display: block; }
+        .tarjeta-btn:active { transform: scale(0.95); background-color: #334155; }
+        .emoji { font-size: 36px; display: block; margin-bottom: 10px; }
+        .texto { font-size: 15px; font-weight: bold; display: block; color: #f8fafc; }
+        .subtexto { font-size: 11px; color: #94a3b8; display: block; margin-top: 4px; }
 
-        /* DESTELLOS DE DISEÑO */
-        .macro-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1);
+        /* Buscador manual por si acaso */
+        .buscador-caja {
+            margin-top: 30px; background: #1e293b; border: 1px solid #ff5722;
+            border-radius: 25px; padding: 6px 6px 6px 16px; display: flex; align-items: center;
         }
-        .macro-card.fuel::before { background: var(--neon-orange); }
-        .macro-card.shop::before { background: var(--neon-cyan); }
-        .macro-card.pharmacy::before { background: var(--neon-green); }
-
-        /* ANIMACIONES */
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        .buscador-caja input {
+            flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .buscador-caja button {
+            background: #ff5722; border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
+    <h1>🏪 BuscaCompra S.O.S</h1>
+    <p>Capa de emergencia automática para madrugada</p>
 
-    <header class="radar-header">
-        <div class="logo-container">
-            <div class="radar-pulse"></div>
-            <span class="brand-title">QUANTUM RADAR v2.0</span>
+    <!-- BOTONES DIRECTOS FÁCILES -->
+    <div class="grid-botones">
+        <div class="tarjeta-btn" onclick="abrirMapaInmediato('gasolinera 24 horas')">
+            <span class="emoji">⛽</span>
+            <span class="texto">Gasolineras 24h</span>
+            <span class="subtexto">Hielo, bebida, snacks</span>
         </div>
-    </header>
 
-    <div class="search-wrapper">
-        <input type="text" id="quantumSearch" class="search-input" placeholder="Haz un escaneo directo manual...">
-        <button class="search-action-btn" onclick="escanearManual()">🚀</button>
+        <div class="tarjeta-btn" onclick="abrirMapaInmediato('tienda de conveniencia abierta ahora')">
+            <span class="emoji">🏪</span>
+            <span class="texto">Tiendas 24h</span>
+            <span class="subtexto">Alimentos y básicos</span>
+        </div>
+
+        <div class="tarjeta-btn" onclick="abrirMapaInmediato('farmacia de guardia abierta ahora')">
+            <span class="emoji">💊</span>
+            <span class="texto">Farmacia Guardia</span>
+            <span class="subtexto">Medicamentos urgentes</span>
+        </div>
+
+        <div class="tarjeta-btn" onclick="abrirMapaInmediato('bazar abierto ahora')">
+            <span class="emoji">🔌</span>
+            <span class="texto">Bazar / Chinos</span>
+            <span class="subtexto">Pilas, cargadores, cables</span>
+        </div>
     </div>
 
-    <!-- PANEL DE CONTROL INTEGRADOR (CÁLCULO EN SEGUNDO PLANO) -->
-    <div id="resultsPanel" class="results-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <span style="font-size:12px; font-weight:bold; color:var(--neon-cyan); letter-spacing:1px;">📡 CAPTURA DE NODOS ACTIVOS</span>
-            <span style="cursor:pointer; font-size:12px; color:#6b7280;" onclick="cerrarPanel()">CERRAR ✕</span>
-        </div>
-        <div id="quantumLoader" class="loader-box">
-            <div class="spinner-quantum"></div>
-            <p style="margin:0; font-size:13px; color:#9ca3af;">Interrogando satélite Overpass API...</p>
-        </div>
-        <div id="nodosContainer"></div>
-    </div>
-
-    <div class="grid-title">Filtros de Escaneo Inmediato</div>
-
-    <div class="macro-grid">
-        <div class="macro-card fuel" onclick="ejecutarMatrizFiltro('hielo', 'fuel')">
-            <span class="macro-icon">⛽</span>
-            <span class="macro-label">Estaciones 24h</span>
-            <span class="macro-desc">Hielo, snacks y suministros.</span>
-        </div>
-        
-        <div class="macro-card shop" onclick="ejecutarMatrizFiltro('tienda', 'convenience')">
-            <span class="macro-icon">🏪</span>
-            <span class="macro-label">Convenience</span>
-            <span class="macro-desc">Alimentación de madrugada.</span>
-        </div>
-
-        <div class="macro-card pharmacy" onclick="ejecutarMatrizFiltro('farmacia', 'pharmacy')">
-            <span class="macro-icon">💊</span>
-            <span class="macro-label">Médico / Guardia</span>
-            <span class="macro-desc">Farmacias y emergencias.</span>
-        </div>
-
-        <div class="macro-card" onclick="ejecutarMatrizFiltro('bazar', 'bazar')">
-            <span class="macro-icon">⚡</span>
-            <span class="macro-label">Multi-Bazar</span>
-            <span class="macro-desc">Cargadores, pilas y electrónica.</span>
-        </div>
+    <!-- BUSCADOR POR SI QUIEREN ALGO MÁS SPECÍFICO -->
+    <div class="buscador-caja">
+        <input type="text" id="inputManual" placeholder="¿Buscas otra cosa? Ej: Mc Donalds">
+        <button onclick="buscarManual()">🔍</button>
     </div>
 
     <script>
-        // FÓRMULA DE HAVERSINE: Geometría esférica avanzada para calcular distancias reales sobre la curvatura de la Tierra
-        function haversineDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // Radio de la Tierra en metros
-            const phi1 = lat1 * Math.PI / 180;
-            const phi2 = lat2 * Math.PI / 180;
-            const deltaPhi = (lat2 - lat1) * Math.PI / 180;
-            const deltaLambda = (lon2 - lon1) * Math.PI / 180;
-
-            const a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
-                      Math.cos(phi1) * Math.cos(phi2) *
-                      Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-            return R * c; // Resultado exacto en metros
-        }
-
-        function cerrarPanel() { document.getElementById('resultsPanel').style.display = 'none'; }
-
-        function ejecutarMatrizFiltro(keyword, fallbackTag) {
-            const panel = document.getElementById('resultsPanel');
-            const loader = document.getElementById('quantumLoader');
-            const container = document.getElementById('nodosContainer');
-
-            panel.style.display = 'block';
-            container.innerHTML = '';
-            loader.style.display = 'block';
-
-            // Interceptamos la Geolocalización nativa mediante API del navegador
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const uLat = pos.coords.latitude;
-                    const uLon = pos.coords.longitude;
-
-                    // Consulta asíncrona optimizada de Nodos Overpass (Radio extendido 8km)
-                    const queryUrl = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:10];(node(around:8000,${uLat},${uLon})[shop];node(around:8000,${uLat},${uLon})[amenity];);out tags geom;`;
-
-                    // Lógica híbrida con límite de tiempo (Race condition: si la API tarda más de 3 segundos, salta al Mapa Nativo para no hacer esperar al usuario)
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => {
-                        controller.abort();
-                        inyectarRedireccionDirecta(keyword);
-                    }, 3500);
-
-                    fetch(queryUrl, { signal: controller.signal })
-                        .then(res => res.json())
-                        .then(data => {
-                            clearTimeout(timeoutId);
-                            loader.style.display = 'none';
-                            let nodosValidos = [];
-
-                            data.elements.forEach(element => {
-                                if (!element.tags || !element.tags.name) return;
-                                const name = element.tags.name.toLowerCase();
-                                const shop = element.tags.shop || '';
-                                const amenity = element.tags.amenity || '';
-
-                                if (shop === fallbackTag || amenity === fallbackTag || name.includes(keyword)) {
-                                    const mDist = haversineDistance(uLat, uLon, element.lat, element.lon);
-                                    nodosValidos.push({
-                                        name: element.tags.name,
-                                        distance: mDist,
-                                        road: element.tags['addr:street'] || 'Vía detectada por GPS'
-                                    });
-                                }
-                            });
-
-                            // Ordenación binaria por proximidad lineal métrica
-                            nodosValidos.sort((a, b) => a.distance - b.distance);
-
-                            if(nodosValidos.length === 0) {
-                                inyectarRedireccionDirecta(keyword);
-                                return;
-                            }
-
-                            // Renderizado dinámico con inyección segura de nodos limpios
-                            nodosValidos.slice(0, 3).forEach(nodo => {
-                                const distTxt = nodo.distance < 1000 ? `${Math.round(nodo.distance)} m` : `${(nodo.distance/1000).toFixed(1)} km`;
-                                const card = document.createElement('div');
-                                card.className = 'node-card';
-                                card.innerHTML = `
-                                    <div class="node-info">
-                                        <h4>${nodo.name}</h4>
-                                        <p>📍 Rango: <strong>${distTxt}</strong> | ${nodo.road}</p>
-                                    </div>
-                                    <span class="node-badge" onclick="lanzarRutaGPS('${nodo.name}')">IR ➔</span>
-                                `;
-                                container.appendChild(card);
-                            });
-                        })
-                        .catch(() => {
-                            clearTimeout(timeoutId);
-                            inyectarRedireccionDirecta(keyword);
-                        });
-                },
-                () => { inyectarRedireccionDirecta(keyword); }
-            );
-        }
-
-        function inyectarRedireccionDirecta(keyword) {
-            document.getElementById('quantumLoader').style.display = 'none';
-            const container = document.getElementById('nodosContainer');
-            container.innerHTML = `
-                <div style="text-align:center; padding:10px;">
-                    <p style="font-size:13px; color:#9ca3af; margin:0 0 12px 0;">Escaneo local completado. Abriendo capa de mapas nativa del dispositivo móvil...</p>
-                    <button style="background:var(--neon-orange); border:none; padding:10px 20px; color:#fff; border-radius:20px; font-weight:bold; cursor:pointer;" onclick="lanzarRutaGPS('${keyword} abierto ahora')">ABRIR MAPA COMPLETO</button>
-                </div>
-            `;
-            lanzarRutaGPS(`${keyword} abierto ahora`);
-        }
-
-        function lanzarRutaGPS(query) {
-            const isApple = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const url = isApple ? `maps://?q=${encodeURIComponent(query)}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+        function abrirMapaInmediato(termino) {
+            // Detectamos si es iOS (iPhone/iPad) o Android/PC
+            const esApple = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Si es Apple usamos su protocolo nativo; si es Android/PC usamos la URL universal de Google Maps
+            const url = esApple 
+                ? `maps://?q=${encodeURIComponent(termino)}` 
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(termino)}`;
+            
             window.location.href = url;
         }
 
-        function escanearManual() {
-            const val = document.getElementById('quantumSearch').value.trim();
-            if(val) ejecutarMatrizFiltro(val, '');
+        function buscarManual() {
+            const consulta = document.getElementById('inputManual').value.trim();
+            if (consulta) {
+                // Le añadimos la coletilla mágica para que el mapa filtre los cerrados
+                abrirMapaInmediato(consulta + " abierto ahora");
+            }
         }
     </script>
+
 </body>
 </html>
+
