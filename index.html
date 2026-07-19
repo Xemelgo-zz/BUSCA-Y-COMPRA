@@ -12,7 +12,6 @@
             --bg-main: #0b0f19;
             --bg-card: #1e293b;
             --accent-orange: #ff5722;
-            --accent-yellow: #facc15;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --green-glow: #10b981;
@@ -46,11 +45,6 @@
             border-radius: 50%; color: white; cursor: pointer; font-size: 14px;
         }
 
-        /* TABS */
-        .tabs-nav { display: flex; gap: 20px; overflow-x: auto; padding: 8px 16px; white-space: nowrap; font-size: 14px; }
-        .tab-item { color: var(--text-muted); font-weight: 500; }
-        .tab-item.active { color: var(--accent-orange); font-weight: 700; border-bottom: 2px solid var(--accent-orange); }
-
         /* BANNER */
         .promo-banner {
             background: linear-gradient(135deg, #111827 0%, #080711 100%);
@@ -83,51 +77,49 @@
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: grid; grid-template-columns: repeat(4, 1fr); height: 60px; border-top: 1px solid rgba(255,255,255,0.05); }
         .nav-tab { display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-muted); font-size: 11px; }
         .nav-tab.active { color: var(--accent-orange); }
-    </nav>
+    </style>
+</head>
+<body>
 
     <header class="app-header">
         <div class="header-top"><span class="brand-name">BuscaCompra 🏪</span></div>
         <div class="search-container">
-            <input type="text" id="productSearchInput" placeholder="¿Qué necesitas con urgencia ahora?">
+            <input type="text" id="productSearchInput" placeholder="¿Qué necesitas urgente?">
             <button class="search-btn" onclick="ejecutarRadarUrgente()">🔍</button>
         </div>
     </header>
 
-    <nav class="tabs-nav">
-        <span class="tab-item active">Buscador por Cercanía Real</span>
-    </nav>
-
-    <!-- ZONA GANCHO DE RESULTADOS DE GEOLOCALIZACIÓN -->
+    <!-- ZONA DE RESULTADOS GEOLOCALIZADOS -->
     <div id="resultsOverlay" class="results-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h4 style="margin:0; font-size:14px; color:var(--accent-orange);">📍 LOCALES CERCANOS DETECTADOS</h4>
+            <h4 style="margin:0; font-size:14px; color:var(--accent-orange);">📍 LOCALES CERCANOS</h4>
             <span style="cursor:pointer; font-size:12px; color:var(--text-muted);" onclick="cerrarResultados()">Cerrar ✕</span>
         </div>
         <div id="loader" class="loader">
             <div class="spinner"></div>
-            <p id="loaderText" style="margin:0; font-size:13px;">Calculando tiendas físicas en tu rango de GPS...</p>
+            <p id="loaderText" style="margin:0; font-size:13px;">Buscando tiendas...</p>
         </div>
         <div id="listaTiendas"></div>
     </div>
 
     <div class="promo-banner">
-        <h3>🚨 S.O.S Madrugada Activo</h3>
-        <p>Buscando automáticamente en gasolineras, tiendas 24h y bazares abiertos en un rango extendido de 10km.</p>
+        <h3>🚨 Modo Nocturno Optimizado</h3>
+        <p>Buscando en gasolineras, farmacias y tiendas 24h en un rango extendido de 10km.</p>
     </div>
 
-    <h3 class="section-title">Productos de Emergencia Disponibles</h3>
+    <h3 class="section-title">Urgencias Disponibles</h3>
     <div class="products-grid">
         <div class="product-card" onclick="autocompletarBusqueda('hielo')">
             <div class="product-img-box">🧊</div>
             <div class="product-info">
-                <p class="product-name">Bolsa de Hielo Macizo 2kg</p>
+                <p class="product-name">Bolsa de Hielo 2kg</p>
                 <span class="current-price">1,80€</span>
             </div>
         </div>
         <div class="product-card" onclick="autocompletarBusqueda('pilas')">
             <div class="product-img-box">🔋</div>
             <div class="product-info">
-                <p class="product-name">Pilas Alcalinas AA (Pack 4)</p>
+                <p class="product-name">Pilas Alcalinas AA</p>
                 <span class="current-price">3,45€</span>
             </div>
         </div>
@@ -141,7 +133,7 @@
         <div class="product-card" onclick="autocompletarBusqueda('tiritas')">
             <div class="product-img-box">🩹</div>
             <div class="product-info">
-                <p class="product-name">Tiritas Elásticas Impermeables</p>
+                <p class="product-name">Tiritas Elásticas</p>
                 <span class="current-price">2,15€</span>
             </div>
         </div>
@@ -154,8 +146,7 @@
         <div class="nav-tab"><span>👤 Perfil</span></div>
     </nav>
 
-    <script {nonce}>
-        // Diccionario de categorías infalibles para la madrugada
+    <script>
         const mapeoCategoriasNocturnas = {
             'hielo': ['fuel', 'convenience', 'supermarket'],
             'pan': ['convenience', 'fuel', 'bakery'],
@@ -163,7 +154,6 @@
             'agua': ['convenience', 'fuel', 'kiosk'],
             'pila': ['convenience', 'fuel', 'hardware'],
             'pilas': ['convenience', 'fuel', 'hardware'],
-            'motosierra': ['hardware', 'diy'],
             'tiritas': ['pharmacy', 'convenience']
         };
 
@@ -198,14 +188,13 @@
             overlay.style.display = 'block';
             lista.innerHTML = '';
             loader.style.display = 'block';
-            loaderText.innerText = "Consultando nodos GPS vivos...";
+            loaderText.innerText = "Buscando establecimientos abiertos...";
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const latUser = position.coords.latitude;
                     const lonUser = position.coords.longitude;
 
-                    // Ampliamos el rango a 10.000 metros (10km) para asegurar captar locales nocturnos abiertos
                     const url = `https://overpass-api.de/api/interpreter?data=[out:json];(node(around:10000,${latUser},${lonUser})[shop];node(around:10000,${latUser},${lonUser})[amenity];);out tags geom;`;
 
                     fetch(url)
@@ -222,7 +211,6 @@
                                 const shop = el.tags.shop || '';
                                 const amenity = el.tags.amenity || '';
 
-                                // Verificamos si encaja con el tipo de tienda que buscamos o si el nombre contiene la palabra clave
                                 let cumpleFiltro = categoriasRelevantes.some(cat => shop === cat || amenity === cat || name.includes(inputUser));
 
                                 if (cumpleFiltro) {
@@ -231,25 +219,24 @@
                                         name: el.tags.name,
                                         dist: distancia,
                                         tipo: shop || amenity,
-                                        calle: el.tags['addr:street'] ? `${el.tags['addr:street']} ${el.tags['addr:housenumber'] || ''}` : 'Ubicación cercana'
+                                        calle: el.tags['addr:street'] ? el.tags['addr:street'] : 'Cerca de tu posición'
                                     });
                                 }
                             });
 
-                            // ORDEN ESTRICTO: El comercio que tengas más cerca de tus pies primero
                             tiendasEncontradas.sort((a,b) => a.dist - b.dist);
 
                             if(tiendasEncontradas.length === 0) {
-                                lista.innerHTML = `<p style="font-size:13px; text-align:center; padding:10px; color:var(--text-muted);">No se detectan gasolineras o tiendas 24h compatibles en un radio de 10km.</p>`;
+                                lista.innerHTML = `<p style="font-size:13px; text-align:center; padding:10px; color:var(--text-muted);">Prueba con 'hielo' o 'pilas'. No hay más comercios en 10km.</p>`;
                                 return;
                             }
 
-                            // Renderizamos los 4 locales comerciales más cercanos reales
                             tiendasEncontradas.slice(0, 4).forEach(t => {
                                 const distTxt = t.dist < 1 ? `${Math.round(t.dist * 1000)} metros` : `${t.dist.toFixed(1)} km`;
-                                let etiquetaComercio = "🏪 Establecimiento comercial";
-                                if (t.tipo === 'fuel') etiquetaComercio = "⛽ Gasolinera (Abierta de noche)";
-                                if (t.tipo === 'convenience') etiquetaComercio = "🏪 Tienda 24h / Conveniencia";
+                                let etiquetaComercio = "🏪 Tienda";
+                                if (t.tipo === 'fuel') etiquetaComercio = "⛽ Gasolinera 24h";
+                                if (t.tipo === 'convenience') etiquetaComercio = "🏪 Tienda de conveniencia";
+                                if (t.tipo === 'pharmacy') etiquetaComercio = "💊 Farmacia";
 
                                 const div = document.createElement('div');
                                 div.className = 'shop-card';
@@ -258,24 +245,24 @@
                                         <h5 class="shop-title">${t.name}</h5>
                                         <span class="badge-open">Abierto</span>
                                     </div>
-                                    <p style="margin:6px 0 0; font-size:13px; color:white;">📍 A <strong>${distTxt}</strong> de ti</p>
+                                    <p style="margin:6px 0 0; font-size:13px; color:white;">📍 A <strong>${distTxt}</strong></p>
                                     <p style="margin:2px 0 0; font-size:11px; color:var(--text-muted);">${etiquetaComercio}</p>
-                                    <p style="margin:6px 0 0; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.05); padding-top:4px;">🗺️ ${t.calle}</p>
                                 `;
                                 lista.appendChild(div);
                             });
                         })
                         .catch(() => { 
                             loader.style.display = 'none'; 
-                            lista.innerHTML = '<p style="text-align:center;color:red;">Error de conexión con la red de mapas.</p>';
+                            lista.innerHTML = '<p style="text-align:center;">Error de red.</p>';
                         });
                 },
                 () => { 
                     loader.style.display = 'none'; 
-                    alert("Es necesario dar permisos de GPS para medir la distancia exacta."); 
+                    alert("Por favor, activa el GPS."); 
                 }
             );
         }
     </script>
 </body>
 </html>
+de
